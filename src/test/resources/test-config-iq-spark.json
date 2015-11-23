@@ -1,0 +1,22 @@
+{
+  "connections": [{
+    "hostname": "iq-spark-001",
+    "login": "ubuntu",
+    "keyfile": "~/.ssh/id_rsa"
+  }, {
+    "hostname": "iq-spark-002",
+    "login": "ubuntu",
+    "keyfile": "~/.ssh/id_rsa"
+  }, {
+    "hostname": "iq-spark-003",
+    "login": "ubuntu",
+    "keyfile": "~/.ssh/id_rsa"
+  }],
+  "sourceRoots": ["/Users/ken/workspace/sparkProjectSrc", "/Users/ken/workspace/hadoopProjSrc/etc/hadoop/conf"],
+  "destinationRoots": ["/opt/sparkDeployFolder", "/etc/hadoop/conf"],
+  "refreshIntervalInSeconds": 2,
+  "fileTypesToBeWatched": ["*.scala","*.java","*.py", "*.txt"],
+  "fileTypesToBeIgnored": ["target/", ".git/"]
+}
+
+

@@ -1,0 +1,21 @@
+{
+  "connections": [{
+    "hostname": "<THE REMOTE HOST NAME 1>",
+    "login": "<THE LOGIN USER 1>",
+    "keyfile": "<THE LOCATION OF THE SSH KEY-FILE 1>"
+  },{
+    "hostname": "<THE REMOTE HOST NAME 2 if any>",
+    "login": "<THE LOGIN USER 2 if any>",
+    "keyfile": "<THE LOCATION OF THE SSH KEY-FILE 2 if any>"
+  },{
+    "hostname": "<THE REMOTE HOST NAME 3 if any>",
+    "login": "<THE LOGIN USER 3 if any>",
+    "keyfile": "<THE LOCATION OF THE SSH KEY-FILE 3 if any>"
+  }],
+  "sourceRoots": [<LIST of THE PATH TO THE ROOT OF THE SOURCE FOLDER IN YOUR SOURCE SERVER>],
+  "destinationRoots": [<LIST of THE PATH TO THE REMOTE OF THE DESTINATION SERVER>],
+  "refreshIntervalInSeconds": <THE NUMBER OF SECONDS YOU WANT TO PERFORM THE SERVERSYNCHRONIZATION>,
+  "fileTypesToBeWatched": [<LIST oF THE FILE EXTENSIONS TO BE WATCHED>],
+  "fileTypesToBeIgnored": [<LIST oF THE FILE EXTENSIONS TO BE IGNORED>]
+}
+

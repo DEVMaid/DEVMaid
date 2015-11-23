@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>DEVMaid Web interface</title>
+<meta http-equiv="Content-Language" content="English" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/style.css" media="screen" />
+
+<!-- jQuery and jQuery UI (REQUIRED) -->
+		<link rel="stylesheet" type="text/css" href="/stylesheets/jquery-ui.css">
+		<script src="/scripts/jquery/jquery.min.js"></script>
+		<script src="/scripts/jquery/jquery-ui.min.js"></script>
+
+		<!-- elFinder CSS (REQUIRED) -->
+		<link rel="stylesheet" type="text/css" href="/stylesheets/elfinder/elfinder.min.css">
+		<link rel="stylesheet" type="text/css" href="/stylesheets/elfinder/theme.css">
+
+		<!-- elFinder JS (REQUIRED) -->
+		<script src="/scripts/js/elfinder/elfinder.full.js"></script>
+
+		<!-- elFinder translation (OPTIONAL) -->
+		<script src="/scripts/js/elfinder/i18n/elfinder.ru.js"></script>
+
+		<!-- elFinder initialization (REQUIRED) -->
+		<script type="text/javascript" charset="utf-8">
+			// Documentation for client options:
+			// https://github.com/Studio-42/elFinder/wiki/Client-configuration-options
+			$(document).ready(function() {
+				$('#elfinder').elfinder({
+					url : 'elfinder-servlet/connector',
+					// , lang: 'ru'                    // language (OPTIONAL)
+				});
+				
+				$('#elfinder_remote').elfinder({
+					url : 'elfinder-servlet/connector-remote',
+					// , lang: 'ru'                    // language (OPTIONAL)
+				});
+			});
+		</script>
+		
+		
+
+
+</head>
+<body>
+
+<div id="wrap">
+
+	<div id="header">
+	<h1><a href="#">DEVMaid Web</a></h1>
+	<h2>A tool that increases your development productivity and efficience</h2>
+	</div>
+
+ 	<div id="content">
+  		
+
+			<h2>Local: <a href="#">
+			<%
+			
+			import com.devmaid.web.util.UtilWeb
+			val localhostrep = UtilWeb.getLocalHostNameRep()
+			
+			%>
+			${localhostrep}
+			</a></h2>
+		
+			<div class="articles">
+
+				<!-- Element where elFinder will be created (REQUIRED) !--> 
+				<div id="elfinder"></div>
+				 
+				
+			</div>
+			<br/>
+			<h2>Remote:</h2>
+		
+			<div class="articles">
+
+				
+				<!-- Element where elFinder will be created (REQUIRED) !-->
+				<div id="elfinder_remote"></div>
+				 
+
+			</div>
+
+			<div style="clear: both;"> </div>
+		
+	</div>
+
+
+	
+	Copyright <a href="https://github.com/wwken/DEVMaid">DEVMaid</a> 2015-2016
+	
+</div>
+
+</body>
+</html>

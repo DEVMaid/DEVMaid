@@ -1,0 +1,13 @@
+{
+  "connections": [{
+    "hostname": "localhost",
+    "login": "travis",
+    "keyfile": "~/.ssh/id_rsa"
+  }],
+  "sourceRoots": ["/tmp/devmaid/source/"],
+  "destinationRoots": ["/tmp/devmaid/dest/"],
+  "refreshIntervalInSeconds": 2,
+  "fileTypesToBeWatched": ["*.scala","*.java","*.py", "*.txt"],
+  "fileTypesToBeIgnored": ["target/", ".git/"]
+}
+

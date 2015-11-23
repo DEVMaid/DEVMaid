@@ -1,0 +1,17 @@
+{
+  "connections": [{
+    "hostname": "localhost",
+    "login": "ken",
+    "keyfile": "/Users/ken/.ssh/id_rsa"
+  },{
+    "hostname": "localhost",
+    "login": "ken",
+    "keyfile": "/Users/ken/.ssh/id_rsa"
+  }],
+  "sourceRoots": ["/tmp/devmaid/source1/", "/tmp/devmaid/source1/subDirectory"],
+  "destinationRoots": ["/tmp/devmaid/dest1/", "/tmp/devmaid/dest2/"],
+  "refreshIntervalInSeconds": 2,
+  "fileTypesToBeWatched": ["*.scala","*.java","*.py", "*.txt"],
+  "fileTypesToBeIgnored": ["target/",".git/"]
+}
+

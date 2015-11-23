@@ -1,0 +1,166 @@
+/*
+Copyright (c) 2015 Ken Wu
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+#
+# -----------------------------------------------------------------------------
+#
+# Author: Ken Wu
+# Date: 2015
+* 
+*/
+
+package com.devmaid.common.file.ssh
+
+import com.jcabi.ssh.Shell
+import com.jcabi.ssh.SSH
+import com.devmaid.common.Log
+import com.devmaid.common.config.Configuration
+import com.devmaid.common.file.{ FileSynchronizer, RemoteResult }
+import com.devmaid.common.Util
+import scala.io.Source
+import java.io.IOException
+
+/*
+ * Each SshManager will process a single SSH connection to one host (although various sourceRoots and destination roots)
+ */
+class SshManager(val config: Configuration) extends FileSynchronizer with Log {
+
+  private def createSSHClient() = {
+    val ssh = SshManager.createSSH(config)
+    new RichSshClient(ssh)
+    //sshClient.exec("ls") //test a simple command to make sure it works
+  }
+
+  override def uploadFile(fileToLoad: String, sourceIndex: Int): RemoteResult = {
+    val source = Util.joinPath(config.sourceRoots(sourceIndex), fileToLoad)
+    val destination = Util.joinPath(config.destinationRoots(sourceIndex), fileToLoad)
+    _updateRemoteFile(source, destination)
+  }
+
+  override def createDir(dirToCreate: String, sourceIndex: Int): RemoteResult = {
+    return createDir(dirToCreate, sourceIndex, false)
+  }
+  
+  def createDir(dirToCreate: String, sourceIndex: Int, isAbsolutePath: Boolean = false): RemoteResult = {
+    val destination = if(isAbsolutePath) dirToCreate else Util.joinPath(config.destinationRoots(sourceIndex), dirToCreate)
+    _updateRemoteFile(null, destination)
+  }
+
+  override def removeFile(file: String, sourceIndex: Int): RemoteResult = {
+    return removeFile(file, sourceIndex, false)
+  }
+  
+  def removeFile(file: String, sourceIndex: Int, isAbsolutePath: Boolean = false): RemoteResult = {
+    val fullPFilePath = if (isAbsolutePath) file else Util.joinPath(config.destinationRoots(sourceIndex), file)
+    _exec("rm -rf " + fullPFilePath)
+  }
+  
+  override def removeDir(file: String, sourceIndex: Int): RemoteResult = {
+    return removeFile(file, sourceIndex, false)
+  }
+  
+  def removeDir(file: String, sourceIndex: Int, isAbsolutePath: Boolean = false): RemoteResult = {
+    return removeFile(file, sourceIndex, isAbsolutePath)
+  }
+
+  /*
+   * if source is null, then just create the dir only
+   */
+  private def _updateRemoteFile(source: String, destination: String): RemoteResult = {
+    val sshClient = createSSHClient()
+    info("In _updateRemoteFile, source: " + source + ", destination: " + destination)
+    var res = sshClient.recursivelyCreatePathIfNotExists(destination, source != null)
+    if (source != null) {
+      try{
+        res = sshClient.upload(source, destination)
+      } catch {
+        case ioe: Exception => {
+          debug("In _updateRemoteFile, ERROR -> source: " + source + ", destination: " + destination + " has IOException error: " + ioe)
+          return RemoteResult(RemoteResult.ERROR, Some(ioe.toString))
+        }
+      }
+      
+    }
+    RemoteResult(RemoteResult.SUCESS, Some(res))
+  }
+
+  /*
+   * Be careful to call this method! it is very dangerous
+   */
+  def removeRoot(sourceIndex: Int): RemoteResult = {
+    _exec("rm -rf " + config.destinationRoots(sourceIndex))
+  }
+
+  def find(rootFolder: String, keyword: String, sourceIndex: Int, isAbsolutePath: Boolean = false): RemoteResult = {
+    val fullPFilePath = if (isAbsolutePath) rootFolder else  Util.joinPath(config.destinationRoots(sourceIndex), rootFolder)
+    val fullPFilePathWithOutSlashAtTheEnd = if ((fullPFilePath takeRight 1)=="/") fullPFilePath take fullPFilePath.length -1 else fullPFilePath 
+    _exec("find "+fullPFilePathWithOutSlashAtTheEnd+" -iname '"+keyword+"' -exec ls -laF {} \\;")
+  }
+  
+  def ls(file: String, sourceIndex: Int, isAbsolutePath: Boolean = false): RemoteResult = {
+    val fullPFilePath = if (isAbsolutePath) file else  Util.joinPath(config.destinationRoots(sourceIndex), file)
+    _exec("ls -laF " + fullPFilePath)
+  }
+
+  private def _exec(command: String): RemoteResult = {
+    val sshClient = createSSHClient()
+    var r = ""
+    var e = ""
+    r = sshClient.exec(command)
+
+    debug("In _exec, command: " + command + ", result: " + r + ", error: " + e)
+    if (e.length() > 0) {
+      RemoteResult(RemoteResult.ERROR, Some(e))
+    } else {
+      RemoteResult(RemoteResult.SUCESS, Some(r))
+    }
+  }
+
+  def exists(file: String, isThisAFile: Boolean, sourceIndex: Int): Boolean = {
+    val lsStr = ls(file, sourceIndex)
+    lsStr.message match {
+      case Some(x) => {
+        val lowerX = x.toLowerCase()
+        val fileNotFound = lowerX.contains("no such file or directory")
+        if (isThisAFile) {
+          if (fileNotFound) {
+            false
+          } else {
+            x.indexOfSlice(file) > -1
+          }
+        } else {
+          val emptyResponse = lowerX.length() == 0
+          debug("In exists, lowerX: " + lowerX + ", emptyResponse:" + emptyResponse + ", fileNotFound:" + fileNotFound)
+          emptyResponse || !fileNotFound
+        }
+      }
+      case None => false
+    }
+  }
+}
+
+object SshManager extends Log {
+  def createSSH(config: Configuration): SSH = {
+    createSSH(config.connection.hostname, config.connection.login, config.connection.keyfile)
+  }
+
+  private def createSSH(hostname: String, login: String, keyfile: String): SSH = {
+    info("hostname: " + hostname + ", login: " + login)
+    val keyContent = Source.fromFile(Util.translateUserHomeDirIfThereIsOne(keyfile)).getLines.mkString("\n")
+    val ssh = new SSH(
+      hostname, 22,
+      login, keyContent)
+    ssh
+  }
+}

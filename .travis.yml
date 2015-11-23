@@ -1,0 +1,12 @@
+language: scala
+scala:
+   - 2.11.6
+before_script: 
+   - rm -rf ~/.ssh/
+   - ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+   - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+   - mkdir ./lib/
+   - mkdir ./web/lib/
+   
+   
+script: "./run-test.sh"
