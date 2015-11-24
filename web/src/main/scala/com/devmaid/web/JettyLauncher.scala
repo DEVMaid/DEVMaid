@@ -31,6 +31,7 @@ import spray.json.JsonParser
 import scopt.OptionParser
 import spray.json.DefaultJsonProtocol
 
+import com.devmaid.web.ssh.SshClient
 import com.devmaid.web.util.Log
 import com.devmaid.common.config.Connection
 import com.devmaid.common.config.Configuration
@@ -92,6 +93,8 @@ object JettyLauncher extends Log { // this is my entry object as specified in sb
     info("configFileName: " + configFileName)
 
     configFiles = Some(Configuration.load(configFileName))
+    
+    SshClient.setConfigFiles(configFiles)
     
     connections = (for(i <- 0 to configFiles.get.size-1) yield configFiles.get(i).connection).toList 
     sourceRoots = configFiles.get(0).sourceRoots

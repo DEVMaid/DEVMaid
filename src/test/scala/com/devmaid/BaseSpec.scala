@@ -33,6 +33,8 @@ import java.io.File
 
 trait BaseSpec extends Log {
 
+  val configurationPath = BaseSpec.configurationPath
+  val configurations = BaseSpec.configurations
   val configuration = BaseSpec.configuration
   //val configuration = Configuration.load("./src/test/resources/test-config-iq-spark.json")
   val sshManager = BaseSpec.createSSHManager(configuration)
@@ -104,7 +106,9 @@ trait BaseSpec extends Log {
 }
 
 object BaseSpec extends Log {
-  var configuration = Configuration.load("./src/test/resources/test-config-localhost.json")(0)
+  val configurationPath = "./src/test/resources/test-config-localhost.json"
+  val configurations = Some(Configuration.load(configurationPath))
+  var configuration = configurations.get(0)
   private var current = 0
   private def inc = { current += 1; current }
   val sshManager = try { // Make it singleton for more efficient

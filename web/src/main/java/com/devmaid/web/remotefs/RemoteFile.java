@@ -39,9 +39,9 @@ public class RemoteFile extends java.io.File {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String _p;
-	private int _connectionIndex = 0;
-	private int _sourceIndex = 0;
+	protected String _p;
+	protected int _connectionIndex = 0;
+	protected int _sourceIndex = 0;
 	private RemoteFile _parent = null;
 	private RemoteFile[] _allChildrens = null;
 	private boolean _isDirectory = true;
@@ -51,9 +51,13 @@ public class RemoteFile extends java.io.File {
 		super(relativePath);
 		this._p = relativePath;
 	}
-
+	
+	String sshLs() {
+		return SshClient.ls(this._p, _connectionIndex, _sourceIndex, true);
+	}
+	
 	private void construct() {
-		String response = SshClient.ls(this._p, _connectionIndex, _sourceIndex, true);
+		String response = sshLs();
 
 		/*
 		 * Example of the output woule be like:
@@ -105,6 +109,10 @@ public class RemoteFile extends java.io.File {
 		return false;
 	}
 
+	String sshFind(String keyword) {
+		return SshClient.find(this._p, keyword, _connectionIndex, _sourceIndex, true);
+	}
+	
 	/*
 	 * This function is to issue a find command remotely on the current
 	 * directory and return a list of the RemoteFile which match the query
@@ -113,7 +121,7 @@ public class RemoteFile extends java.io.File {
 	 * '$keyword' 2>/dev/null
 	 */
 	public RemoteFile[] find(String keyword) {
-		String response = SshClient.find(this._p, keyword, _connectionIndex, _sourceIndex, true);
+		String response = sshFind(keyword);
 		UtilWeb.info("In RemoteFile find, response: " + response);
 		RemoteFileResponse[] allRemoteFileResponse = parse(this, response);
 		RemoteFile[] allRemoteFiles= constructRemoteFileFromRemoteFileResponse(this, allRemoteFileResponse);

@@ -26,13 +26,20 @@ Copyright (c) 2015 Ken Wu
 package com.devmaid.web.ssh
 
 import com.devmaid.web.util.Log
+import com.devmaid.common.config.Configuration
 import com.devmaid.common.file.ssh.SshManager
 import com.devmaid.web.JettyLauncher
 
 object SshClient extends Log {
+  var configFiles = None : Option[List[Configuration]]  //This needs to be externally set
+  
+  lazy val sshManagers = (for (i <- 0 to getConfigFiles.size - 1) yield new SshManager(getConfigFiles.get(i))).toList
 
-  val sshManagers = (for (i <- 0 to JettyLauncher.configFiles.size - 1) yield new SshManager(JettyLauncher.getConfig(i))).toList
-
+  def setConfigFiles(cfs: Option[List[Configuration]]) = {
+    configFiles = cfs
+  }
+  def getConfigFiles() = configFiles
+  
   def find(rootFolder: String, keyword: String, connectionIndex: Int, sourceIndex: Int, isAbsolutePath: Boolean = false): String = {
     val result = sshManagers(connectionIndex).find(rootFolder, keyword, sourceIndex, isAbsolutePath)
     result.message.getOrElse("")
