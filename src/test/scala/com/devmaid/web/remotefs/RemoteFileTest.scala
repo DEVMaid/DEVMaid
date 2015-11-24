@@ -35,22 +35,30 @@ class RemoteFileTest extends FunSpec with BaseSpec with Matchers with Log {
 
   val TEST_RESOURCES_BASE = List[String]("/tmp/devmaid/RemoteFileTest")
   
-  it("test constructing a remote file with basic functionalities", Tag("RemoteFileTest1_Basic")) {
+  //This code is to create a sshClient test connection
+  val modifiedConfigurations = BaseSpec.modifiyConfigurationsWithCurrentUserAccount(configurations)
+  SshClient.setConfigFiles(modifiedConfigurations)
+  
+  it("test constructing a remote file with basic functionalities like listFiles() and find()", Tag("RemoteFileTest1_Basic")) {
     val FILE1 = Util.joinPath(TEST_RESOURCES_BASE(0), "a/testa.txt")
     val FILE2 = Util.joinPath(TEST_RESOURCES_BASE(0), "a/b/testb.txt")
     val FILE3 = Util.joinPath(TEST_RESOURCES_BASE(0), "a/c/testc.txt")
+    val FILE3_1 = Util.joinPath(TEST_RESOURCES_BASE(0), "a/c/tesc.txt")
     reset(TEST_RESOURCES_BASE, "", true)
     Util.filesToLoad(TEST_RESOURCES_BASE(0)) should not contain allOf(FILE1, FILE2, FILE3)
     writeToFile(FILE1, "Content-" + FILE1)
     writeToFile(FILE2, "Content-" + FILE2)
     writeToFile(FILE3, "Content-" + FILE3)
-    
-    SshClient.setConfigFiles(configurations)
+    writeToFile(FILE3_1, "Content-" + FILE3_1)
     
     val rf = new RemoteFile(TEST_RESOURCES_BASE(0))
     
-    info(rf.listFiles+"")
-    assert(true)
+    val rf_testc = rf.find("testc.txt")
+    assert(rf_testc.size == 1 && rf_testc(0).getFile==FILE3)
+    
+    val rf_test_star = rf.find("test*.txt")
+    
+    assert(rf_test_star.size==3)
     
   }
 

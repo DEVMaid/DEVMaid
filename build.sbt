@@ -11,9 +11,6 @@ resolvers += Resolver.sonatypeRepo("public")
 resolvers += "spray repo" at "http://repo.spray.io"
 
 
-libraryDependencies += "org.apache.httpcomponents" % "httpclient" % "4.4"
-libraryDependencies += "org.apache.httpcomponents" % "httpmime" % "4.4"
-libraryDependencies += "org.apache.httpcomponents" % "fluent-hc" % "4.4"
 libraryDependencies += "commons-io" % "commons-io" % "2.4"
 
 libraryDependencies += "com.github.scopt" %% "scopt" % "3.3.0"

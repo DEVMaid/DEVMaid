@@ -295,8 +295,11 @@ public class RemoteFile extends java.io.File {
 	
 	private static RemoteFile[] constructRemoteFileFromRemoteFileResponse(RemoteFile currentFile, RemoteFileResponse[] allRemoteFileResponses) {
 		ArrayList<RemoteFile> allRemoteFiles = new ArrayList<RemoteFile>();
-		for (int i = 0; i < allRemoteFileResponses.length; i++) {
+		for (int i = 0; i < allRemoteFileResponses.length; i++) {;
 			String wholeRelativePath = Util.joinPath(currentFile._p, allRemoteFileResponses[i].path);
+			if (allRemoteFileResponses[i].path.charAt(0) == '/') {	//If it is absolute path already, then just take that absolute path without joining
+				wholeRelativePath = allRemoteFileResponses[i].path;
+			}
 			RemoteFile subFile = new RemoteFile(wholeRelativePath);
 			subFile.setConnectionIndex(currentFile._connectionIndex);
 			subFile.setParentFile(currentFile);
