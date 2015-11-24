@@ -1,6 +1,6 @@
 # DEVMaid 
 
-[![Build Status](https://travis-ci.org/DEVMaid/DEVMaid.svg?branch=master)](https://travis-ci.org/wwken/DEVMaid.svg)
+[![Build Status](https://travis-ci.org/DEVMaid/DEVMaid.svg?branch=master)](https://travis-ci.org/DEVMaid/DEVMaid.svg)
 
 ### This software is to increase the efficiency and productivity in all software developments by automatic running deployments or synchronizing between a local server to all remote server(s)
 
