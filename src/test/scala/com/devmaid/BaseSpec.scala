@@ -33,6 +33,8 @@ import java.io.File
 
 trait BaseSpec extends Log {
 
+  val configurationPath = BaseSpec.configurationPath
+  val configurations = BaseSpec.configurations
   val configuration = BaseSpec.configuration
   //val configuration = Configuration.load("./src/test/resources/test-config-iq-spark.json")
   val sshManager = BaseSpec.createSSHManager(configuration)
@@ -104,7 +106,9 @@ trait BaseSpec extends Log {
 }
 
 object BaseSpec extends Log {
-  var configuration = Configuration.load("./src/test/resources/test-config-localhost.json")(0)
+  val configurationPath = "./src/test/resources/test-config-localhost.json"
+  val configurations = Some(Configuration.load(configurationPath))
+  var configuration = configurations.get(0)
   private var current = 0
   private def inc = { current += 1; current }
   val sshManager = try { // Make it singleton for more efficient
@@ -113,19 +117,24 @@ object BaseSpec extends Log {
     sm
   } catch {
     case ioe: java.io.IOException => {
-      val user = System.getenv("USER")
-      val newConnection = new Connection(configuration.connection.hostname, user, configuration.connection.keyfile)
-      val newConfiguration = new Configuration(newConnection, configuration.sourceRoots, configuration.destinationRoots,
-        configuration.refreshIntervalInSeconds, configuration.fileTypesToBeWatched, configuration.fileTypesToBeIgnored)
-      info("user...: " + user)
-      info("newConfiguration: " + newConfiguration)
-      configuration = newConfiguration
+      val newConfiguration = modifiyConfigurationsWithCurrentUserAccount(configurations).get(0)
       val sm = new SshManager(newConfiguration)
-      sm.ls("", 0) //Make sure it is working by doing simple commands
+      //sm.ls("", 0) //Make sure it is working by doing simple commands
+      configuration = newConfiguration  //Reassign it back
       sm
     }
   }
 
+  //This method modify the original configurations for any bad connection replaced with the current user account
+  def modifiyConfigurationsWithCurrentUserAccount(origConfigurations: Option[List[Configuration]]): Option[List[Configuration]] = {
+    val user = System.getenv("USER")
+    val newConfigurations = (for (i <- 0 to origConfigurations.size - 1) 
+      yield new Configuration(new Connection(origConfigurations.get(i).connection.hostname, user, origConfigurations.get(i).connection.keyfile), configuration.sourceRoots, configuration.destinationRoots,
+        origConfigurations.get(i).refreshIntervalInSeconds, origConfigurations.get(i).fileTypesToBeWatched, origConfigurations.get(i).fileTypesToBeIgnored)
+    ) 
+    return Some(newConfigurations.toList)
+  }
+  
   def createSSHManager(configuration: Configuration): SshManager = {
     sshManager
   }
