@@ -61,5 +61,18 @@ class RemoteFileTest extends FunSpec with BaseSpec with Matchers with Log {
     assert(rf_test_star.size==3)
     
   }
+  
+  it("test a remote file with advanced functionalities like editing..etc", Tag("RemoteFileTest1_Advanced_Editing")) {
+    reset(TEST_RESOURCES_BASE, "", true)
+    val HELLOPATH = Util.joinPath(TEST_RESOURCES_BASE(0), "editTest/hello.txt")
+    writeToFile(HELLOPATH, "Content-")
+    val rf = new RemoteFile(HELLOPATH)
+    val expectedContent = "Content-MODIFIED"
+    rf.write(expectedContent)
+    val actualContent = rf.cat()
+    info("expectedContent: " + expectedContent)
+    info("actualContent: " + actualContent)
+    assert(expectedContent==actualContent)
+  }
 
 }

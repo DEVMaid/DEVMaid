@@ -52,6 +52,14 @@ public class RemoteFile extends java.io.File {
 		this._p = relativePath;
 	}
 	
+	String sshCat() {
+		return SshClient.cat(this._p, _connectionIndex, _sourceIndex, true);
+	}
+	
+	public String cat() {
+		return sshCat();
+	}
+	
 	String sshLs() {
 		return SshClient.ls(this._p, _connectionIndex, _sourceIndex, true);
 	}
@@ -315,6 +323,15 @@ public class RemoteFile extends java.io.File {
 
 		}// end the for loop
 		return allRemoteFiles.toArray(new RemoteFile[allRemoteFiles.size()]);
+	}
+
+	//This method is to write a string of new content to this file through ssh
+	public void write(String newContent) {
+		sshWrite(newContent);
+	}
+	
+	String sshWrite(String newContent) {
+		return SshClient.write(this._p, newContent, _connectionIndex, _sourceIndex, true);
 	}
 
 }
