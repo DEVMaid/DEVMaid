@@ -12,5 +12,11 @@ class MyScalatraServlet extends DevmaidwebStack {
     //ssp("index")
     layoutTemplate("/WEB-INF/templates/views/index.ssp")
   }
+  
+  post("/") {
+    contentType="text/html"
+    
+    layoutTemplate("/WEB-INF/templates/views/index.ssp")
+  }
 
 }

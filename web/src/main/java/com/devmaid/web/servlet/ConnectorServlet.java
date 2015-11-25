@@ -128,6 +128,13 @@ public class ConnectorServlet extends HttpServlet
 	{
 		_connectorController.connector(req, resp);
 	}
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException
+	{
+		_connectorController.connector(req, resp);
+	}
 
 	@Override
 	public void init(ServletConfig config) throws ServletException
