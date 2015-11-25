@@ -12,7 +12,7 @@
 		<script src="/scripts/jquery/jquery-ui.min.js"></script>
 
 		<!-- elFinder CSS (REQUIRED) -->
-		<link rel="stylesheet" type="text/css" href="/stylesheets/elfinder/elfinder.min.css">
+		<link rel="stylesheet" type="text/css" href="/stylesheets/elfinder/elfinder.full.css">
 		<link rel="stylesheet" type="text/css" href="/stylesheets/elfinder/theme.css">
 
 		<!-- elFinder JS (REQUIRED) -->
@@ -67,7 +67,7 @@
 			<div class="articles">
 
 				<!-- Element where elFinder will be created (REQUIRED) !--> 
-				<div id="elfinder"></div>
+				<div id="elfinder" style="width: 950px"></div>
 				 
 				
 			</div>
@@ -78,7 +78,7 @@
 
 				
 				<!-- Element where elFinder will be created (REQUIRED) !-->
-				<div id="elfinder_remote"></div>
+				<div id="elfinder_remote" style="width: 950px"></div>
 				 
 
 			</div>
