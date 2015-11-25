@@ -24,6 +24,7 @@ package com.devmaid.web.util
 
 import java.io.File
 import java.net.InetAddress
+import java.io.InputStream
 
 object UtilWeb extends Log{
   
@@ -53,6 +54,10 @@ object UtilWeb extends Log{
    */
   def getLocalHostNameRep(): String = {
     System.getProperty("user.name") + "@" + getLocalHostName()
+  }
+  
+  def readInputStreamIntoString(is: InputStream): String = {
+    scala.io.Source.fromInputStream(is).mkString
   }
   
 }

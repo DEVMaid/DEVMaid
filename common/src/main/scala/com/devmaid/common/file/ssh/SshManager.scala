@@ -51,25 +51,25 @@ class SshManager(val config: Configuration) extends FileSynchronizer with Log {
   override def createDir(dirToCreate: String, sourceIndex: Int): RemoteResult = {
     return createDir(dirToCreate, sourceIndex, false)
   }
-  
+
   def createDir(dirToCreate: String, sourceIndex: Int, isAbsolutePath: Boolean = false): RemoteResult = {
-    val destination = if(isAbsolutePath) dirToCreate else Util.joinPath(config.destinationRoots(sourceIndex), dirToCreate)
+    val destination = if (isAbsolutePath) dirToCreate else Util.joinPath(config.destinationRoots(sourceIndex), dirToCreate)
     _updateRemoteFile(null, destination)
   }
 
   override def removeFile(file: String, sourceIndex: Int): RemoteResult = {
     return removeFile(file, sourceIndex, false)
   }
-  
+
   def removeFile(file: String, sourceIndex: Int, isAbsolutePath: Boolean = false): RemoteResult = {
     val fullPFilePath = if (isAbsolutePath) file else Util.joinPath(config.destinationRoots(sourceIndex), file)
     _exec("rm -rf " + fullPFilePath)
   }
-  
+
   override def removeDir(file: String, sourceIndex: Int): RemoteResult = {
     return removeFile(file, sourceIndex, false)
   }
-  
+
   def removeDir(file: String, sourceIndex: Int, isAbsolutePath: Boolean = false): RemoteResult = {
     return removeFile(file, sourceIndex, isAbsolutePath)
   }
@@ -82,7 +82,7 @@ class SshManager(val config: Configuration) extends FileSynchronizer with Log {
     info("In _updateRemoteFile, source: " + source + ", destination: " + destination)
     var res = sshClient.recursivelyCreatePathIfNotExists(destination, source != null)
     if (source != null) {
-      try{
+      try {
         res = sshClient.upload(source, destination)
       } catch {
         case ioe: Exception => {
@@ -90,7 +90,7 @@ class SshManager(val config: Configuration) extends FileSynchronizer with Log {
           return RemoteResult(RemoteResult.ERROR, Some(ioe.toString))
         }
       }
-      
+
     }
     RemoteResult(RemoteResult.SUCESS, Some(res))
   }
@@ -102,15 +102,25 @@ class SshManager(val config: Configuration) extends FileSynchronizer with Log {
     _exec("rm -rf " + config.destinationRoots(sourceIndex))
   }
 
-  def find(rootFolder: String, keyword: String, sourceIndex: Int, isAbsolutePath: Boolean = false): RemoteResult = {
-    val fullPFilePath = if (isAbsolutePath) rootFolder else  Util.joinPath(config.destinationRoots(sourceIndex), rootFolder)
-    val fullPFilePathWithOutSlashAtTheEnd = if ((fullPFilePath takeRight 1)=="/") fullPFilePath take fullPFilePath.length -1 else fullPFilePath 
-    _exec("find "+fullPFilePathWithOutSlashAtTheEnd+" -iname '"+keyword+"' -exec ls -laF {} \\;")
+  def cat(file: String, sourceIndex: Int, isAbsolutePath: Boolean = false): RemoteResult = {
+    val fullPFilePath = if (isAbsolutePath) file else Util.joinPath(config.destinationRoots(sourceIndex), file)
+    _exec("cat " + fullPFilePath)
   }
-  
+
+  def find(rootFolder: String, keyword: String, sourceIndex: Int, isAbsolutePath: Boolean = false): RemoteResult = {
+    val fullPFilePath = if (isAbsolutePath) rootFolder else Util.joinPath(config.destinationRoots(sourceIndex), rootFolder)
+    val fullPFilePathWithOutSlashAtTheEnd = if ((fullPFilePath takeRight 1) == "/") fullPFilePath take fullPFilePath.length - 1 else fullPFilePath
+    _exec("find " + fullPFilePathWithOutSlashAtTheEnd + " -iname '" + keyword + "' -exec ls -laF {} \\;")
+  }
+
   def ls(file: String, sourceIndex: Int, isAbsolutePath: Boolean = false): RemoteResult = {
-    val fullPFilePath = if (isAbsolutePath) file else  Util.joinPath(config.destinationRoots(sourceIndex), file)
+    val fullPFilePath = if (isAbsolutePath) file else Util.joinPath(config.destinationRoots(sourceIndex), file)
     _exec("ls -laF " + fullPFilePath)
+  }
+
+  def write(file: String, content: String, sourceIndex: Int, isAbsolutePath: Boolean = false): RemoteResult = {
+    val fullPFilePath = if (isAbsolutePath) file else Util.joinPath(config.destinationRoots(sourceIndex), file)
+    _exec("echo \"" + content + "\" > " + file + " ")
   }
 
   private def _exec(command: String): RemoteResult = {
@@ -119,7 +129,7 @@ class SshManager(val config: Configuration) extends FileSynchronizer with Log {
     var e = ""
     r = sshClient.exec(command)
 
-    debug("In _exec, command: " + command + ", result: " + r + ", error: " + e)
+    debug("In _exec, command: " + snapshot(command) + ", result: " + r + ", error: " + e)
     if (e.length() > 0) {
       RemoteResult(RemoteResult.ERROR, Some(e))
     } else {

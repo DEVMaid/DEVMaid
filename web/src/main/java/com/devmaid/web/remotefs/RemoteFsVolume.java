@@ -22,6 +22,7 @@ Copyright (c) 2015 DEVMaid
 
 package com.devmaid.web.remotefs;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -302,7 +303,17 @@ public class RemoteFsVolume implements FsVolume {
 
 	@Override
 	public InputStream openInputStream(FsItem fsi) throws IOException {
-		return new FileInputStream(asFile(fsi));
+		if(fsi instanceof RemoteFsItem) {
+			//This is a remote file
+			RemoteFile rf = (RemoteFile)asFile(fsi);
+			String content = rf.cat();
+			InputStream in = new ByteArrayInputStream(content.getBytes("UTF-8"));
+			return in;
+		} else {
+			//This is a local file
+			return new FileInputStream(asFile(fsi)); 	
+		}
+		
 		
 	}
 
@@ -330,6 +341,9 @@ public class RemoteFsVolume implements FsVolume {
 
 	@Override
 	public void writeStream(FsItem fsi, InputStream is) throws IOException {
+		String newContent = UtilWeb.readInputStreamIntoString(is);
+		RemoteFile rf = (RemoteFile)asFile(fsi);
+		rf.write(newContent);
 		// To be implemented
 		/*
 		 * OutputStream os = null; try { os = new FileOutputStream(asFile(fsi));
@@ -338,5 +352,7 @@ public class RemoteFsVolume implements FsVolume {
 		 */
 
 	}
+	
+
 
 }

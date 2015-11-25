@@ -31,15 +31,20 @@ import com.devmaid.common.file.ssh.SshManager
 import com.devmaid.web.JettyLauncher
 
 object SshClient extends Log {
-  var configFiles = None : Option[List[Configuration]]  //This needs to be externally set
-  
+  var configFiles = None: Option[List[Configuration]] //This needs to be externally set
+
   lazy val sshManagers = (for (i <- 0 to getConfigFiles.size - 1) yield new SshManager(getConfigFiles.get(i))).toList
 
   def setConfigFiles(cfs: Option[List[Configuration]]) = {
     configFiles = cfs
   }
   def getConfigFiles() = configFiles
-  
+
+  def cat(file: String, connectionIndex: Int, sourceIndex: Int, isAbsolutePath: Boolean = false): String = {
+    val result = sshManagers(connectionIndex).cat(file, sourceIndex, isAbsolutePath)
+    result.message.getOrElse("").stripLineEnd
+  }
+
   def find(rootFolder: String, keyword: String, connectionIndex: Int, sourceIndex: Int, isAbsolutePath: Boolean = false): String = {
     val result = sshManagers(connectionIndex).find(rootFolder, keyword, sourceIndex, isAbsolutePath)
     result.message.getOrElse("")
@@ -47,6 +52,11 @@ object SshClient extends Log {
 
   def ls(file: String, connectionIndex: Int, sourceIndex: Int, isAbsolutePath: Boolean = false): String = {
     val result = sshManagers(connectionIndex).ls(file, sourceIndex, isAbsolutePath)
+    result.message.getOrElse("")
+  }
+
+  def write(file: String, content: String, connectionIndex: Int, sourceIndex: Int, isAbsolutePath: Boolean = false): String = {
+    val result = sshManagers(connectionIndex).write(file, content, sourceIndex, isAbsolutePath)
     result.message.getOrElse("")
   }
 
