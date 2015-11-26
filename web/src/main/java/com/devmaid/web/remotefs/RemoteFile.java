@@ -32,6 +32,7 @@ import com.devmaid.web.service.FsItem;
 import com.devmaid.web.util.UtilWeb;
 import com.devmaid.web.ssh.SshClient;
 import com.devmaid.common.Util;
+import java.util.UUID;
 
 public class RemoteFile extends java.io.File {
 
@@ -332,6 +333,11 @@ public class RemoteFile extends java.io.File {
 	
 	String sshWrite(String newContent) {
 		return SshClient.write(this._p, newContent, _connectionIndex, _sourceIndex, true);
+	}
+	
+	
+	public String getRandomizedFileName() {
+		return Util.getFileName(this._p) + "_" + UUID.randomUUID();
 	}
 
 }

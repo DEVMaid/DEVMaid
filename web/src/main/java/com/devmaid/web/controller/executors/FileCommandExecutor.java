@@ -18,6 +18,8 @@ import com.devmaid.web.controller.executor.CommandExecutor;
 import com.devmaid.web.controller.executor.FsItemEx;
 import com.devmaid.web.service.FsService;
 import com.devmaid.web.util.MimeTypesUtils;
+import com.devmaid.web.remotefs.RemoteFileInputStream;
+import com.devmaid.common.Util;
 
 public class FileCommandExecutor extends AbstractCommandExecutor implements CommandExecutor
 {
@@ -62,6 +64,12 @@ public class FileCommandExecutor extends AbstractCommandExecutor implements Comm
 				try
 				{
 					is.close();
+					
+					//Lastly, remove the tmp uploaded file if it is a remote file 
+					if(is instanceof RemoteFileInputStream) {
+						RemoteFileInputStream ris = (RemoteFileInputStream)is;
+						Util.removeLocalFile(ris.getFilePath());
+					}
 				}
 				catch (IOException e)
 				{

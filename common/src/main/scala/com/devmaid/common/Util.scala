@@ -36,6 +36,11 @@ object Util extends Log {
     return xx.contains(yy)
   }
 
+  def ensureDir(p: String) = {
+    val f = new File(p)
+    f.mkdirs()
+  }
+
   def getFileExtension(p: String): String = {
     val fn = new File(p).getName
     val i = fn.lastIndexOf(".")
@@ -44,6 +49,11 @@ object Util extends Log {
     } else {
       fn
     }
+  }
+
+  def getFileName(p: String): String = {
+    val f = new File(p)
+    f.getName
   }
 
   def getParentPath(p: String): String = {
@@ -85,6 +95,23 @@ object Util extends Log {
 
     } else
       return d
+  }
+
+  def removeLocalFile(fp: String): Boolean = {
+    val f = new File(fp)
+    return f.delete
+  }
+
+  def writeContentToLocalFile(fp: String, content: String) = {
+    ensureDir(getParentPath(fp))
+    def printToFile(f: java.io.File)(op: java.io.PrintWriter => Unit) {
+      val p = new java.io.PrintWriter(f)
+      try { op(p) } finally { p.close() }
+    }
+    val data = Array(content)
+    printToFile(new File(fp)) { p =>
+      data.foreach(p.println)
+    }
   }
 
   def isEmpty(d: String): Boolean = {
