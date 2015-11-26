@@ -14,6 +14,9 @@
 # 	./build.sh --nocommon true
 # 	./build.sh --notest true --nocommon true
 
+#This executes the full build and full copy of the target jar 
+mv ../git/ ../git_backup 2>/dev/null
+
 while [[ $# > 1 ]]
 do
 key="$1"

@@ -307,8 +307,10 @@ public class RemoteFsVolume implements FsVolume {
 			//This is a remote file
 			RemoteFile rf = (RemoteFile)asFile(fsi);
 			String content = rf.cat();
-			InputStream in = new ByteArrayInputStream(content.getBytes("UTF-8"));
-			return in;
+			//InputStream in = new ByteArrayInputStream(content.getBytes("UTF-8"));
+			String tmpFileToWritenTo = Util.joinPath("/etc/DEVMaid/tmp/", rf.getRandomizedFileName());
+			Util.writeContentToLocalFile(tmpFileToWritenTo,content);
+			return new RemoteFileInputStream(tmpFileToWritenTo);
 		} else {
 			//This is a local file
 			return new FileInputStream(asFile(fsi)); 	

@@ -19,3 +19,4 @@ web/release/
 web/release/*
 common/release/
 common/release/*
+/hello.txt
