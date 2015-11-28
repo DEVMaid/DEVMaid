@@ -5,6 +5,7 @@ before_script:
    - rm -rf ~/.ssh/
    - ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
    - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+   - printf "Host localhost\n\tNoHostAuthenticationForLocalhost yes" > ~/.ssh/config
    - mkdir ./lib/
    - mkdir ./web/lib/
    
