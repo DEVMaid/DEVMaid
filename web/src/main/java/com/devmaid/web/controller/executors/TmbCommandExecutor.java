@@ -28,7 +28,7 @@ public class TmbCommandExecutor extends AbstractCommandExecutor implements Comma
 	{
 		String target = request.getParameter("target");
 		FsItemEx fsi = super.findItem(fsService, target);
-		InputStream is = fsi.openInputStream(true);		//Open a raw stream instead
+		InputStream is = fsi.openInputStream();
 		BufferedImage image = ImageIO.read(is);
 		int width = fsService.getServiceConfig().getTmbWidth();
 		ResampleOp rop = new ResampleOp(DimensionConstrain.createMaxDimension(width, -1));

@@ -181,15 +181,11 @@ public class FsItemEx
 		}
 		return list;
 	}
-
-	public InputStream openInputStream() throws IOException {
-		return openInputStream(false);
-	}
 	
 	
-	public InputStream openInputStream(boolean isRaw) throws IOException
+	public InputStream openInputStream() throws IOException
 	{
-		return _v.openInputStream(_f, isRaw);
+		return _v.openInputStream(_f);
 	}
 
 	public void writeStream(InputStream is) throws IOException

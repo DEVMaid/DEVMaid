@@ -253,15 +253,12 @@ public class RemoteFsVolume implements FsVolume {
 
 	@Override
 	public boolean hasChildFolder(FsItem fsi) {
-		return asFile(fsi).isDirectory()
-				&& asFile(fsi).listFiles(new FileFilter()
-				{
-					@Override
-					public boolean accept(File arg0)
-					{
-						return arg0.isDirectory();
-					}
-				}).length > 0;
+		return asFile(fsi).isDirectory() && asFile(fsi).listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File arg0) {
+				return arg0.isDirectory();
+			}
+		}).length > 0;
 	}
 
 	@Override
@@ -275,17 +272,18 @@ public class RemoteFsVolume implements FsVolume {
 	}
 
 	@Override
-	public FsItem[] listChildren(FsItem fsi, KeywordFsItemFilter filter){
+	public FsItem[] listChildren(FsItem fsi, KeywordFsItemFilter filter) {
 		RemoteFile rf = asFile(fsi);
 		List<FsItem> list = new ArrayList<FsItem>();
-		//Here i am basically issuing the find command on current directory on this rf RemoteFile
+		// Here i am basically issuing the find command on current directory on
+		// this rf RemoteFile
 		RemoteFile[] cs = rf.find(filter.getKeyWord());
 		for (RemoteFile c : cs) {
 			list.add(fromFile(c));
 		}
 		return list.toArray(new FsItem[list.size()]);
 	}
-	
+
 	@Override
 	public FsItem[] listChildren(FsItem fsi) {
 		List<FsItem> list = new ArrayList<FsItem>();
@@ -303,29 +301,22 @@ public class RemoteFsVolume implements FsVolume {
 
 	@Override
 	public InputStream openInputStream(FsItem fsi) throws IOException {
-		return openInputStream(fsi, false);
-	}
-	
-	@Override
-	public InputStream openInputStream(FsItem fsi, boolean isRaw) throws IOException {
-		if(fsi instanceof RemoteFsItem) {
-			//This is a remote file
-			RemoteFile rf = (RemoteFile)asFile(fsi);
+		if (fsi instanceof RemoteFsItem) {
+			// This is a remote file
+			RemoteFile rf = (RemoteFile) asFile(fsi);
 			String tmpFileToWritenTo = Util.joinPath("/etc/DEVMaid/tmp/", rf.getRandomizedFileName());
-			if(isRaw) {
-				//If it is raw, meaning it is going to be scp instead to local file system
-				rf.scp(tmpFileToWritenTo);
-			} else {
-				String content = rf.cat();
-				Util.writeContentToLocalFile(tmpFileToWritenTo,content);	
-			}
+
+			rf.scp(tmpFileToWritenTo);
+			// } else {
+			// String content = rf.cat();
+			// Util.writeContentToLocalFile(tmpFileToWritenTo,content);
+			// }
 			return new RemoteFileInputStream(tmpFileToWritenTo);
 		} else {
-			//This is a local file
-			return new FileInputStream(asFile(fsi)); 	
+			// This is a local file
+			return new FileInputStream(asFile(fsi));
 		}
-		
-		
+
 	}
 
 	@Override
@@ -353,7 +344,7 @@ public class RemoteFsVolume implements FsVolume {
 	@Override
 	public void writeStream(FsItem fsi, InputStream is) throws IOException {
 		String newContent = UtilWeb.readInputStreamIntoString(is);
-		RemoteFile rf = (RemoteFile)asFile(fsi);
+		RemoteFile rf = (RemoteFile) asFile(fsi);
 		rf.write(newContent);
 		// To be implemented
 		/*
@@ -363,7 +354,5 @@ public class RemoteFsVolume implements FsVolume {
 		 */
 
 	}
-	
-
 
 }
