@@ -66,9 +66,8 @@
 		
 			<div class="articles">
 
-				<!-- Element where elFinder will be created (REQUIRED)  
+				<!-- Element where elFinder will be created (REQUIRED) !--> 
 				<div id="elfinder" style="width: 950px"></div>
-				 !-->
 				
 			</div>
 			<br/>

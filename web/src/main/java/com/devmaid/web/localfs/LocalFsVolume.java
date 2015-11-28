@@ -257,12 +257,6 @@ public class LocalFsVolume implements FsVolume
 	}
 
 	@Override
-	public InputStream openInputStream(FsItem fsi) throws IOException
-	{
-		return openInputStream(fsi, false);
-	}
-
-	@Override
 	public void rename(FsItem src, FsItem dst) throws IOException
 	{
 		asFile(src).renameTo(asFile(dst));
@@ -312,8 +306,7 @@ public class LocalFsVolume implements FsVolume
 	}
 
 	@Override
-	public InputStream openInputStream(FsItem fsi, boolean isRaw) throws IOException {
-		//NOt using the isRaw parameter as it is for RemoteFsVolume only
+	public InputStream openInputStream(FsItem fsi) throws IOException {
 		return new FileInputStream(asFile(fsi));
 	}
 }

@@ -49,8 +49,6 @@ public interface FsVolume
 	FsItem[] listChildren(FsItem fsi);
 
 	InputStream openInputStream(FsItem fsi) throws IOException;
-	
-	InputStream openInputStream(FsItem fsi, boolean isRaw) throws IOException;
 
 	void writeStream(FsItem f, InputStream is) throws IOException;
 
