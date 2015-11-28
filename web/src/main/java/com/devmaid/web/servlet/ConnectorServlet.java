@@ -89,7 +89,7 @@ public class ConnectorServlet extends HttpServlet
 			String sourceRoot = sourceRoots.get(i);
 			String dirName = UtilWeb.instance().getName(sourceRoot);
 			String repName = dirName + " ("+sourceRoot+")";
-			fsService.addVolume("Source"+i,
+			fsService.addVolume("LocalSource"+i,
 					ceateLocalFsVolume(repName, new File(sourceRoot)));
 		}
 		//fsService.addVolume("A",

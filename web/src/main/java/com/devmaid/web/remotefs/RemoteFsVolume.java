@@ -303,13 +303,22 @@ public class RemoteFsVolume implements FsVolume {
 
 	@Override
 	public InputStream openInputStream(FsItem fsi) throws IOException {
+		return openInputStream(fsi, false);
+	}
+	
+	@Override
+	public InputStream openInputStream(FsItem fsi, boolean isRaw) throws IOException {
 		if(fsi instanceof RemoteFsItem) {
 			//This is a remote file
 			RemoteFile rf = (RemoteFile)asFile(fsi);
-			String content = rf.cat();
-			//InputStream in = new ByteArrayInputStream(content.getBytes("UTF-8"));
 			String tmpFileToWritenTo = Util.joinPath("/etc/DEVMaid/tmp/", rf.getRandomizedFileName());
-			Util.writeContentToLocalFile(tmpFileToWritenTo,content);
+			if(isRaw) {
+				//If it is raw, meaning it is going to be scp instead to local file system
+				rf.scp(tmpFileToWritenTo);
+			} else {
+				String content = rf.cat();
+				Util.writeContentToLocalFile(tmpFileToWritenTo,content);	
+			}
 			return new RemoteFileInputStream(tmpFileToWritenTo);
 		} else {
 			//This is a local file

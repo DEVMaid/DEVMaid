@@ -23,7 +23,6 @@ Copyright (c) 2015 Ken Wu
 package com.devmaid.common.file.ssh
 
 import com.jcabi.ssh.Shell
-import com.jcabi.ssh.SSH
 import java.io.File
 import scala.language.implicitConversions
 import com.devmaid.common.Log
@@ -31,8 +30,12 @@ import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.io.IOException
 
-class RichSshClient(val ssh: SSH) extends Log {
-
+class RichSshClient(val sshDaemon: SSHDaemon) extends Log {
+  
+  val ssh = sshDaemon.getSSH
+  val hostname= sshDaemon.hostname
+  val login = sshDaemon.login
+  val keyfile = sshDaemon.keyfile
   val plainClient = new Shell.Plain(ssh)
 
   /*

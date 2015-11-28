@@ -68,27 +68,34 @@ class UtilTest extends FunSpec with BaseSpec with Matchers with BeforeAndAfter w
     assert(Util.translateUserHomeDirIfThereIsOne(p1).indexOf("~") == -1)
   }
 
-  
   it("test the FilesToLoad function specifically the fileTypesToBeWatched and fileTypesToBeIgnored paremeters", Tag("testFilesToLoad_full_test_1")) {
     val FILE1 = Util.joinPath(TEST_RESOURCES_BASE(0), "target/testa.txt")
     val FILE2 = Util.joinPath(TEST_RESOURCES_BASE(0), "lib/target/testb.txt")
     val FILE3 = Util.joinPath(TEST_RESOURCES_BASE(0), "testc.txt")
     val FILE4 = Util.joinPath(TEST_RESOURCES_BASE(0), "lib/target_1/testd.txt")
-    
+
     val fileTypesToBeWatched = List("")
     val fileTypesToBeIgnored = List("target/", ".git/")
-    
+
     reset(TEST_RESOURCES_BASE, "", true)
-    
+
     writeToFile(FILE1, "Content-" + FILE1)
     writeToFile(FILE2, "Content-" + FILE2)
     writeToFile(FILE3, "Content-" + FILE3)
     writeToFile(FILE4, "Content-" + FILE4)
-    
+
     Util.filesToLoad(TEST_RESOURCES_BASE(0), "", fileTypesToBeWatched, fileTypesToBeIgnored) should not contain allOf(FILE1, FILE2)
     reset(TEST_RESOURCES_BASE, "", false)
-    
-    
+
+  }
+
+  it("test the joinPath function", Tag("joinPath")) {
+    assert(Util.joinPath("/hello/", "/dew")=="/hello/dew")
+    assert(Util.joinPath("hello", "/dew/")=="hello/dew/")
+    assert(Util.joinPath("hello", "dew/")=="hello/dew/")
+    assert(Util.joinPath("hello", "dew")=="hello/dew")
+    assert(Util.joinPath("hello/", "dew")=="hello/dew")
+    assert(Util.joinPath("/hello/", "/dew/")=="/hello/dew/")
   }
 
 }

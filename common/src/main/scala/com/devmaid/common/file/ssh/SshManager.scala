@@ -23,13 +23,13 @@ Copyright (c) 2015 Ken Wu
 package com.devmaid.common.file.ssh
 
 import com.jcabi.ssh.Shell
-import com.jcabi.ssh.SSH
 import com.devmaid.common.Log
 import com.devmaid.common.config.Configuration
 import com.devmaid.common.file.{ FileSynchronizer, RemoteResult }
 import com.devmaid.common.Util
 import scala.io.Source
 import java.io.IOException
+import scala.sys.process._
 
 /*
  * Each SshManager will process a single SSH connection to one host (although various sourceRoots and destination roots)
@@ -158,19 +158,35 @@ class SshManager(val config: Configuration) extends FileSynchronizer with Log {
       case None => false
     }
   }
+  
+  def scp(fSource: String, fDest: String): Boolean = {
+    val sshClient = createSSHClient()
+    val sshKeyFile = sshClient.keyfile
+    val connectionString = sshClient.login + "@" + 
+    sshClient.hostname + ":" + fSource
+    
+    //Now make sure the fDest parent directory exists
+    Util.ensureParentDir(fDest)
+    
+    val scpCommand = Seq("scp", "-i", sshKeyFile, connectionString, fDest)
+    info("scp command executing: " + scpCommand)
+    scpCommand.! == 0
+  }
+  
 }
 
 object SshManager extends Log {
-  def createSSH(config: Configuration): SSH = {
+  def createSSH(config: Configuration): SSHDaemon = {
     createSSH(config.connection.hostname, config.connection.login, config.connection.keyfile)
   }
 
-  private def createSSH(hostname: String, login: String, keyfile: String): SSH = {
+  private def createSSH(hostname: String, login: String, keyfile: String): SSHDaemon = {
     info("hostname: " + hostname + ", login: " + login)
-    val keyContent = Source.fromFile(Util.translateUserHomeDirIfThereIsOne(keyfile)).getLines.mkString("\n")
-    val ssh = new SSH(
+    val fixedKeyFile = Util.translateUserHomeDirIfThereIsOne(keyfile);
+    val keyContent = Source.fromFile(fixedKeyFile).getLines.mkString("\n")
+    val ssh = new SSHDaemon(
       hostname, 22,
-      login, keyContent)
+      login, fixedKeyFile, keyContent)
     ssh
   }
 }

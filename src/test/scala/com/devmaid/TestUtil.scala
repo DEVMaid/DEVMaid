@@ -48,14 +48,19 @@ object TestUtil extends Log {
     FileUtils.deleteQuietly(new File(f));
   }
 
-  def dirExist(p: String): Boolean = {
+  def dirExists(p: String): Boolean = {
     return Files.exists(Paths.get(p))
+  }
+  
+  def fileExists(p: String): Boolean = {
+    val f = new File(p)
+    return f.exists()
   }
 
   // Return false if it already exists 
   // true if otherwise when trying to create
   def ensureDir(p: String): Boolean = {
-    if (dirExist(p)) {
+    if (dirExists(p)) {
       false
     } else {
       createDir(p)

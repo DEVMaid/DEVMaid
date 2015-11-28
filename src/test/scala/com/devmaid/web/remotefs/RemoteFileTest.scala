@@ -39,7 +39,7 @@ class RemoteFileTest extends FunSpec with BaseSpec with Matchers with Log {
   val modifiedConfigurations = BaseSpec.modifiyConfigurationsWithCurrentUserAccount(configurations)
   SshClient.setConfigFiles(modifiedConfigurations)
   
-  it("test constructing a remote file with basic functionalities like listFiles() and find()", Tag("RemoteFileTest1_Basic")) {
+  it("test constructing a remote file with basic functionalities like listFiles() and find()", Tag("RemoteFileTest_Basic")) {
     val FILE1 = Util.joinPath(TEST_RESOURCES_BASE(0), "a/testa.txt")
     val FILE2 = Util.joinPath(TEST_RESOURCES_BASE(0), "a/b/testb.txt")
     val FILE3 = Util.joinPath(TEST_RESOURCES_BASE(0), "a/c/testc.txt")
@@ -62,7 +62,7 @@ class RemoteFileTest extends FunSpec with BaseSpec with Matchers with Log {
     
   }
   
-  it("test a remote file with advanced functionalities like editing..etc", Tag("RemoteFileTest1_Advanced_Editing")) {
+  it("test a remote file with advanced functionalities like editing..etc", Tag("RemoteFileTest_Advanced_Editing")) {
     reset(TEST_RESOURCES_BASE, "", true)
     val HELLOPATH = Util.joinPath(TEST_RESOURCES_BASE(0), "editTest/hello.txt")
     writeToFile(HELLOPATH, "Content-")
@@ -73,6 +73,18 @@ class RemoteFileTest extends FunSpec with BaseSpec with Matchers with Log {
     info("expectedContent: " + expectedContent)
     info("actualContent: " + actualContent)
     assert(expectedContent==actualContent)
+  }
+  
+  it("test a remote file with scp functionality", Tag("RemoteFileTest_scp")) {
+    val fileName = "try.png"
+    val rawpath = Util.joinPath(TEST_RESOURCES_BASE(0), "scpSourceTest/"+fileName)
+    writeToFile(rawpath, "binarycontent...")
+    val rf = new RemoteFile(rawpath)
+    val destPath = Util.joinPath(TEST_RESOURCES_BASE(0), "scpDestTest/"+fileName)
+    val scpResult = rf.scp(destPath)
+     assert(scpResult)
+     assert(fileExists(destPath))
+     
   }
 
 }

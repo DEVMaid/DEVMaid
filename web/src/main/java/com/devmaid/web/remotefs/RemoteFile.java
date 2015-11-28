@@ -32,6 +32,7 @@ import com.devmaid.web.service.FsItem;
 import com.devmaid.web.util.UtilWeb;
 import com.devmaid.web.ssh.SshClient;
 import com.devmaid.common.Util;
+
 import java.util.UUID;
 
 public class RemoteFile extends java.io.File {
@@ -294,6 +295,11 @@ public class RemoteFile extends java.io.File {
 					rfResponse.month = responseAry[RemoteFileResponse.INDEX_MODIFIED_MONTH];
 					rfResponse.day = Integer.parseInt(responseAry[RemoteFileResponse.INDEX_MODIFIED_DAY]);
 					rfResponse.timeOrYear = responseAry[RemoteFileResponse.INDEX_MODIFIED_TIMEORYEAR];
+					if(path.charAt(path.length()-1) == '*') {
+						//Remove the * character at the end of the path.
+						// For example, the path might look like /home/ubuntu/workspace/gis-tools-for-hadoop.wiki/TutorialImages/Image2F2H.png*
+						path = path.substring(0, path.length()-1);
+					}
 					rfResponse.path = path;
 					allRemoteFileResponses.add(rfResponse);
 				}
@@ -338,6 +344,14 @@ public class RemoteFile extends java.io.File {
 	
 	public String getRandomizedFileName() {
 		return Util.getFileName(this._p) + "_" + UUID.randomUUID();
+	}
+
+	/*
+	 * This method executes the scp command on the local machine where the file: tmpFileToWritenTo, will be writen to
+	 */
+	public boolean scp(String tmpFileToWritenTo) {
+		// TODO Auto-generated method stub
+		return SshClient.scp(this._p, tmpFileToWritenTo, _connectionIndex);
 	}
 
 }

@@ -36,6 +36,17 @@ object Util extends Log {
     return xx.contains(yy)
   }
 
+  /*
+   * This method ensures the PARENT of the path exists regardless the path is file or directory
+   */
+  def ensureParentDir(p: String) = {
+    val f = new File(p)
+    if (!f.exists) {
+      //If not exists
+      ensureDir(f.getParent)
+    }
+  }
+  
   def ensureDir(p: String) = {
     val f = new File(p)
     f.mkdirs()
@@ -68,9 +79,17 @@ object Util extends Log {
       newP2 = p2 takeRight p2.length - 2
     }
     if (p1.length() == 0 || lastC == "/") {
-      return p1 + newP2
+      if(p1.length() > 0 && (newP2 take 1) == "/") {
+        return p1 + (newP2 takeRight newP2.length -1)
+      } else {
+        return p1 + newP2
+      }
     } else {
-      return p1 + "/" + newP2
+      if ((newP2 take 1) == "/") {
+        return p1 + newP2
+      } else {
+        return p1 + "/" + newP2
+      }
     }
   }
 

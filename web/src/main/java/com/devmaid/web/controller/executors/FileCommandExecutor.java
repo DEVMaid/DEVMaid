@@ -65,11 +65,8 @@ public class FileCommandExecutor extends AbstractCommandExecutor implements Comm
 				{
 					is.close();
 					
-					//Lastly, remove the tmp uploaded file if it is a remote file 
-					if(is instanceof RemoteFileInputStream) {
-						RemoteFileInputStream ris = (RemoteFileInputStream)is;
-						Util.removeLocalFile(ris.getFilePath());
-					}
+					//Lastly, remove the tmp uploaded file if it is a remote file
+					removeInputStreamOnTmpLocalFile(is);
 				}
 				catch (IOException e)
 				{
