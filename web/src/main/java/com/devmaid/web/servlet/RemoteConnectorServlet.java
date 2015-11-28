@@ -87,7 +87,7 @@ public class RemoteConnectorServlet extends ConnectorServlet
 				String repName = conn.hostname() + ":"+destRoot+"";
 				RemoteFile rootRf = new RemoteFile(destRoot);
 				rootRf.setConnectionIndex(connectionIndex);
-				fsService.addVolume("Source"+i,
+				fsService.addVolume("RemoteSource"+i,
 						ceateRemoteFsVolume(i, repName, rootRf));
 			}	
 		}

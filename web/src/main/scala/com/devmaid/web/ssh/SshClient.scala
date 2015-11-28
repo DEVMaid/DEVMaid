@@ -55,6 +55,10 @@ object SshClient extends Log {
     result.message.getOrElse("")
   }
 
+  def scp(fSource: String, fDest: String,connectionIndex: Int): Boolean = {
+    return sshManagers(connectionIndex).scp(fSource, fDest)
+  }
+  
   def write(file: String, content: String, connectionIndex: Int, sourceIndex: Int, isAbsolutePath: Boolean = false): String = {
     val result = sshManagers(connectionIndex).write(file, content, sourceIndex, isAbsolutePath)
     result.message.getOrElse("")

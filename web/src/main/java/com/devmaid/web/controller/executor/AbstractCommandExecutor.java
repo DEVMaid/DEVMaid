@@ -15,10 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 
+import com.devmaid.common.Util;
+import com.devmaid.web.remotefs.RemoteFileInputStream;
 import com.devmaid.web.service.FsItemFilter;
 import com.devmaid.web.service.FsService;
 import com.devmaid.web.util.FsItemFilterUtils;
 import com.devmaid.web.util.FsServiceUtils;
+
 import org.apache.log4j.Logger;
 
 public abstract class AbstractCommandExecutor implements CommandExecutor
@@ -218,5 +221,13 @@ public abstract class AbstractCommandExecutor implements CommandExecutor
 		}
 
 		return map;
+	}
+	
+	protected void removeInputStreamOnTmpLocalFile(InputStream is) {
+		//Lastly, remove the tmp uploaded file if it is a remote file 
+		if(is instanceof RemoteFileInputStream) {
+			RemoteFileInputStream ris = (RemoteFileInputStream)is;
+			Util.removeLocalFile(ris.getFilePath());
+		}
 	}
 }

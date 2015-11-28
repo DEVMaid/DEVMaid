@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export SBT_TEST_ARG="test-only com.devmaid.UtilTest  -- -n \"joinPath\""
+echo "setting SBT_TEST_ARG to $SBT_TEST_ARG"

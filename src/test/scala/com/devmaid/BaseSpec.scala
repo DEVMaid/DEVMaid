@@ -55,7 +55,7 @@ trait BaseSpec extends Log {
     def exists(d: String): Boolean = {
       val sfileName = d
       val sfilePath = Util.joinPath(configuration.sourceRoots(sourceIndex), d)
-      TestUtil.dirExist(sfilePath)
+      TestUtil.dirExists(sfilePath)
     }
     def removeADir(f: String): Boolean = {
       val sDirPath = Util.joinPath(configuration.sourceRoots(sourceIndex), f)
