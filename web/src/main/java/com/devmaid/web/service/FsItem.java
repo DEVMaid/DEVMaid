@@ -6,4 +6,6 @@ public interface FsItem
 {
 	FsVolume getVolume();
 	File getFile();
+	boolean scpFrom(FsItem source);
+	void refresh();
 }

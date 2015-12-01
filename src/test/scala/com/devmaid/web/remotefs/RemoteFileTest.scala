@@ -54,7 +54,7 @@ class RemoteFileTest extends FunSpec with BaseSpec with Matchers with Log {
     val rf = new RemoteFile(TEST_RESOURCES_BASE(0))
     
     val rf_testc = rf.find("testc.txt")
-    assert(rf_testc.size == 1 && rf_testc(0).getFile==FILE3)
+    assert(rf_testc.size == 1 && rf_testc(0).getFileName==FILE3)
     
     val rf_test_star = rf.find("test*.txt")
     

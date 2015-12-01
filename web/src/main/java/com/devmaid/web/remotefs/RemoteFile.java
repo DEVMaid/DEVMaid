@@ -347,11 +347,27 @@ public class RemoteFile extends java.io.File {
 	}
 
 	/*
-	 * This method executes the scp command on the local machine where the file: tmpFileToWritenTo, will be writen to
+	 * Executes the scp command on the local machine where the file: tmpFileToWritenTo, will be writen to
 	 */
 	public boolean scp(String tmpFileToWritenTo) {
 		// TODO Auto-generated method stub
 		return SshClient.scp(this._p, tmpFileToWritenTo, _connectionIndex);
+	}
+	
+	/*
+	 * Refresh the data structure
+	 */
+	public void refresh() {
+		construct();
+	}
+	
+	/*
+	 * Executes the scp commond on the local machine where sourceLocalPath is the source and this object's path is the dest
+	 */
+	public boolean scpFrom(String sourcePath) {
+		String destPathWithSourceFileName = Util.joinPath(this._p, Util.getFileName(sourcePath));
+		UtilWeb.info("In RemoteFile scpFrom, sourcePath: "+sourcePath+", destPathWithSourceFileName: " + destPathWithSourceFileName);
+		return SshClient.scp(sourcePath, destPathWithSourceFileName, _connectionIndex);
 	}
 
 }

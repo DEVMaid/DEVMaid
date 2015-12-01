@@ -54,11 +54,16 @@ public class PasteCommandExecutor extends AbstractJsonCommandExecutor implements
 			// remote or remote to local)
 			StaticFsServiceFactory staticFsServiceFactory = StaticFsServiceFactory.getInstance();
 			FsService localFsService = staticFsServiceFactory.getFsService();
+			FsItem remoteFsItemDest = fsService.getFsItem(dst);
+			String destRemotePath = remoteFsItemDest.getFile().getAbsolutePath();
 			for (String target : targets) {
-				FsItem localFsItem = localFsService.getFsItem(target);
-				String srcLocalPath = localFsItem.getFile().getAbsolutePath();
-				System.out.println("target: " + target + ", srcLocalPath: " + srcLocalPath);
+				FsItem localFsItemSrc = localFsService.getFsItem(target);
+				String srcLocalPath = localFsItemSrc.getFile().getAbsolutePath();
+				remoteFsItemDest.scpFrom(localFsItemSrc);
+				System.out.println("target: " + target + ", srcLocalPath: " + srcLocalPath + ", destRemotePath: " + destRemotePath);
 			}
+			//Refresh the dest
+			remoteFsItemDest.refresh();
 		} else if (crossServerFromRemoteToLocal) {
 
 		} else {
