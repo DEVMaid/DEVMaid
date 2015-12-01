@@ -28,9 +28,20 @@ import org.slf4j.LoggerFactory;
 
 public class ConnectorServlet extends HttpServlet
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	//core member of this Servlet
 	ConnectorController _connectorController;
 	Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+	private boolean _isThisRemote = false;
+	
+	protected boolean getRemote() {
+		// TODO Auto-generated method stub
+		return _isThisRemote;
+	}
 
 	private LocalFsVolume ceateLocalFsVolume(String name, File rootDir)
 	{
@@ -96,7 +107,6 @@ public class ConnectorServlet extends HttpServlet
 		//		ceateLocalFsVolume("My Files", new File("/Users/ken/workspace/analysis/")));
 		//fsService.addVolume("B",
 		//		ceateLocalFsVolume("Shared", new File("/tmp/")));
-
 		return fsService;
 	}
 
@@ -108,7 +118,7 @@ public class ConnectorServlet extends HttpServlet
 	 */
 	protected StaticFsServiceFactory createServiceFactory()
 	{
-		StaticFsServiceFactory staticFsServiceFactory = new StaticFsServiceFactory();
+		StaticFsServiceFactory staticFsServiceFactory = StaticFsServiceFactory.getInstance();
 		DefaultFsService fsService = createFsService();
 
 		staticFsServiceFactory.setFsService(fsService);
@@ -119,21 +129,21 @@ public class ConnectorServlet extends HttpServlet
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException
 	{
-		_connectorController.connector(req, resp);
+		_connectorController.connector(req, resp, getRemote() );
 	}
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException
 	{
-		_connectorController.connector(req, resp);
+		_connectorController.connector(req, resp, getRemote());
 	}
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException
 	{
-		_connectorController.connector(req, resp);
+		_connectorController.connector(req, resp, getRemote());
 	}
 
 	@Override
@@ -141,4 +151,5 @@ public class ConnectorServlet extends HttpServlet
 	{
 		_connectorController = createConnectorController(config);
 	}
+	
 }

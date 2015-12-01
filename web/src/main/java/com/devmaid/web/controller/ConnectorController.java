@@ -42,7 +42,7 @@ public class ConnectorController
 
 	@RequestMapping
 	public void connector(HttpServletRequest request,
-			final HttpServletResponse response) throws IOException
+			final HttpServletResponse response, final boolean isRemote) throws IOException
 	{
 		try
 		{
@@ -89,6 +89,11 @@ public class ConnectorController
 				public ServletContext getServletContext()
 				{
 					return finalRequest.getSession().getServletContext();
+				}
+				
+				@Override
+				public boolean isRemote() {
+					return isRemote;
 				}
 			});
 		} catch (Exception e)

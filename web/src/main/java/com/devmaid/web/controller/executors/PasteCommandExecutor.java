@@ -1,3 +1,25 @@
+/*
+Copyright (c) 2015 DEVMaid
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+#
+# -----------------------------------------------------------------------------
+#
+# Author: DEVMaid
+# Date: 2015
+ * 
+ */
+
 package com.devmaid.web.controller.executors;
 
 import java.util.ArrayList;
@@ -11,38 +33,49 @@ import org.json.JSONObject;
 import com.devmaid.web.controller.executor.AbstractJsonCommandExecutor;
 import com.devmaid.web.controller.executor.CommandExecutor;
 import com.devmaid.web.controller.executor.FsItemEx;
+import com.devmaid.web.impl.StaticFsServiceFactory;
+import com.devmaid.web.service.FsItem;
 import com.devmaid.web.service.FsService;
 
-public class PasteCommandExecutor extends AbstractJsonCommandExecutor implements CommandExecutor
-{
+public class PasteCommandExecutor extends AbstractJsonCommandExecutor implements CommandExecutor {
 	@Override
 	public void execute(FsService fsService, HttpServletRequest request, ServletContext servletContext, JSONObject json)
-			throws Exception
-	{
+			throws Exception {
 		String[] targets = request.getParameterValues("targets[]");
-		boolean crossServer = "1".equals(request.getParameter("crossServer"));
+		boolean crossServerFromLocalToRemote = "-1".equals(request.getParameter("crossServerOperation"));
+		boolean crossServerFromRemoteToLocal = "1".equals(request.getParameter("crossServerOperation"));
 		String src = request.getParameter("src");
 		String dst = request.getParameter("dst");
 		boolean cut = "1".equals(request.getParameter("cut"));
-
 		List<FsItemEx> added = new ArrayList<>();
 		List<String> removed = new ArrayList<>();
+		if (crossServerFromLocalToRemote) {
+			// If it is a cross server pasting (i.e. copying from local to
+			// remote or remote to local)
+			StaticFsServiceFactory staticFsServiceFactory = StaticFsServiceFactory.getInstance();
+			FsService localFsService = staticFsServiceFactory.getFsService();
+			for (String target : targets) {
+				FsItem localFsItem = localFsService.getFsItem(target);
+				String srcLocalPath = localFsItem.getFile().getAbsolutePath();
+				System.out.println("target: " + target + ", srcLocalPath: " + srcLocalPath);
+			}
+		} else if (crossServerFromRemoteToLocal) {
 
-		FsItemEx fsrc = super.findItem(fsService, src);
-		FsItemEx fdst = super.findItem(fsService, dst);
+		} else {
+			FsItemEx fsrc = super.findItem(fsService, src);
+			FsItemEx fdst = super.findItem(fsService, dst);
 
-		for (String target : targets)
-		{
-			FsItemEx ftgt = super.findItem(fsService, target);
-			String name = ftgt.getName();
-			FsItemEx newFile = new FsItemEx(fdst, name);
-			super.createAndCopy(ftgt, newFile);
-			added.add(newFile);
+			for (String target : targets) {
+				FsItemEx ftgt = super.findItem(fsService, target);
+				String name = ftgt.getName();
+				FsItemEx newFile = new FsItemEx(fdst, name);
+				super.createAndCopy(ftgt, newFile);
+				added.add(newFile);
 
-			if (cut)
-			{
-				ftgt.delete();
-				removed.add(target);
+				if (cut) {
+					ftgt.delete();
+					removed.add(target);
+				}
 			}
 		}
 

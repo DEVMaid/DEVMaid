@@ -15,4 +15,6 @@ public interface CommandExecutionContext
 	HttpServletResponse getResponse();
 
 	ServletContext getServletContext();
+
+	boolean isRemote();
 }

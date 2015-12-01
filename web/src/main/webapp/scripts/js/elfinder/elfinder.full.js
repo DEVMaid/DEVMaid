@@ -798,11 +798,11 @@ window.elFinder = function(node, opts) {
 				
 				while (cnt--) {
 					h = targets[cnt];
-					operation=$.detectDragDropOperation(h, hash);
-					if (operation==-1) {
+					crossServerOperation=$.detectDragDropOperation(h, hash);
+					if (crossServerOperation==-1) {
 						//This is copying from local to remote
 						localToRemoteResult.push(h);
-					} else if (operation==1) {
+					} else if (crossServerOperation==1) {
 						//This is copying from remote to local
 						//ToBeImplemented...
 					} else {
@@ -832,16 +832,16 @@ window.elFinder = function(node, opts) {
 
 				if(localToRemoteResult.length) {
 					self.trigger('unlockfiles', {files: localToRemoteResult});	//Also unlock the files
-					alert(localToRemoteResult);
+					//alert(localToRemoteResult);
 					self.request({
-							data   : {cmd : 'paste', dst : hash, targets : localToRemoteResult, cut : 0, crossServer: 1},
+							data   : {cmd : 'paste', dst : hash, targets : localToRemoteResult, cut : 0, crossServerOperation: crossServerOperation},
 								notify : {type : 'copy', cnt : localToRemoteResult.length}
 							}
 					).done(function(data) {
-						alert("done...");
+						//alert("done...");
 					}).always(
 						function(data) {
-							alert("always...");
+							//alert("always...");
 						}
 					);
 					//ui.helper.hide();
@@ -6859,8 +6859,8 @@ $.fn.elfindercwd = function(fm, options) {
 						hash  = cwd.hash,
 						$this = $(this);
 					$.each(ui.helper.data('files'), function(i, h) {
-						operation = $.detectDragDropOperation(h, hash);
-						if (operation != 0) {
+						crossServerOperation = $.detectDragDropOperation(h, hash);
+						if (crossServerOperation != 0) {
 							//$this.data('dropover', true);
 							//$this.removeClass(clDropActive);
 							//return false;

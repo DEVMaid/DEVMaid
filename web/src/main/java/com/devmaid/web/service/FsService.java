@@ -8,6 +8,8 @@ public interface FsService
 {
 	FsItem fromHash(String hash) throws IOException;
 
+	FsItem getFsItem(String hash) throws IOException;
+	
 	String getHash(FsItem item) throws IOException;
 
 	FsSecurityChecker getSecurityChecker();

@@ -56,6 +56,26 @@ import org.slf4j.LoggerFactory;
 
 public class RemoteConnectorServlet extends ConnectorServlet
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private boolean _isRemote = true;		//Override it to true
+	
+	@Override
+	protected boolean getRemote() {
+		// TODO Auto-generated method stub
+		return _isRemote;
+	}
+
+	@Override
+	protected StaticFsServiceFactory createServiceFactory()
+	{
+		StaticFsServiceFactory staticFsServiceFactory = StaticFsServiceFactory.getInstance();
+		DefaultFsService fsService = createFsService();
+		staticFsServiceFactory.setFsService(fsService, true);
+		return staticFsServiceFactory;
+	}
 	
 	private RemoteFsVolume ceateRemoteFsVolume(int sourceIndex, String name, RemoteFile rootDir)
 	{
@@ -96,7 +116,8 @@ public class RemoteConnectorServlet extends ConnectorServlet
 		//		ceateLocalFsVolume("My Files", new File("/Users/ken/workspace/analysis/")));
 		//fsService.addVolume("B",
 		//		ceateLocalFsVolume("Shared", new File("/tmp/")));
-
+		
 		return fsService;
 	}
+
 }

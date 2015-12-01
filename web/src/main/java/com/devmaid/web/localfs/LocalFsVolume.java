@@ -97,7 +97,7 @@ public class LocalFsVolume implements FsVolume
 		return asFile(newFile).exists();
 	}
 
-	private LocalFsItem fromFile(File file)
+	private LocalFsItem fromFile(java.io.File file)
 	{
 		return new LocalFsItem(this, file);
 	}
@@ -160,8 +160,12 @@ public class LocalFsVolume implements FsVolume
 	{
 		String fullPath = asFile(fsi).getCanonicalPath();
 		String rootPath = _rootDir.getCanonicalPath();
-		String relativePath = fullPath.substring(rootPath.length());
-		return relativePath.replace('\\', '/');
+		try{
+			String relativePath = fullPath.substring(rootPath.length());
+			return relativePath.replace('\\', '/');
+		} catch (Exception e) {
+			return "";
+		}
 	}
 
 	@Override
@@ -213,7 +217,7 @@ public class LocalFsVolume implements FsVolume
 				{
 
 					@Override
-					public boolean accept(File arg0)
+					public boolean accept(java.io.File arg0)
 					{
 						return arg0.isDirectory();
 					}
@@ -235,13 +239,13 @@ public class LocalFsVolume implements FsVolume
 	@Override
 	public FsItem[] listChildren(FsItem fsi, KeywordFsItemFilter filter){
 		List<FsItem> list = new ArrayList<FsItem>();
-		File[] cs = asFile(fsi).listFiles();
+		java.io.File[] cs = (asFile(fsi).listFiles());
 		if (cs == null)
 		{
 			return new FsItem[0];
 		}
 
-		for (File c : cs)
+		for (java.io.File c : cs)
 		{
 			
 				list.add(fromFile(c));

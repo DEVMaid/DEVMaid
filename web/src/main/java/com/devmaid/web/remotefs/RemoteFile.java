@@ -85,7 +85,7 @@ public class RemoteFile extends java.io.File {
 
 	public RemoteFile(RemoteFile o, String relativePath) {
 		super(Util.joinPath(o._p, relativePath));
-		this._p = o.getFile() + relativePath;
+		this._p = o.getFileName() + relativePath;
 	}
 
 	public int getConnectionIndex() {
@@ -143,7 +143,7 @@ public class RemoteFile extends java.io.File {
 		return this._p;
 	}
 
-	public String getFile() {
+	public String getFileName() {
 		return this._p;
 	}
 
