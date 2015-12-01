@@ -832,7 +832,18 @@ window.elFinder = function(node, opts) {
 
 				if(localToRemoteResult.length) {
 					self.trigger('unlockfiles', {files: localToRemoteResult});	//Also unlock the files
-					self.exec('opensss');
+					alert(localToRemoteResult);
+					self.request({
+							data   : {cmd : 'paste', dst : hash, targets : localToRemoteResult, cut : 0, crossServer: 1},
+								notify : {type : 'copy', cnt : localToRemoteResult.length}
+							}
+					).done(function(data) {
+						alert("done...");
+					}).always(
+						function(data) {
+							alert("always...");
+						}
+					);
 					//ui.helper.hide();
 					//self.exec('duplicate', localToRemoteResult);
 					//alert(localToRemoteResult);

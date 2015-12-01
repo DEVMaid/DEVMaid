@@ -20,6 +20,7 @@ public class PasteCommandExecutor extends AbstractJsonCommandExecutor implements
 			throws Exception
 	{
 		String[] targets = request.getParameterValues("targets[]");
+		boolean crossServer = "1".equals(request.getParameter("crossServer"));
 		String src = request.getParameter("src");
 		String dst = request.getParameter("dst");
 		boolean cut = "1".equals(request.getParameter("cut"));
