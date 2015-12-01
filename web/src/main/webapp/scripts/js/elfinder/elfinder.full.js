@@ -839,9 +839,10 @@ window.elFinder = function(node, opts) {
 							}
 					).done(function(data) {
 						//alert("done...");
+						self.exec('open', hash);
 					}).always(
 						function(data) {
-							//alert("always...");
+							self.exec('open', hash);
 						}
 					);
 					//ui.helper.hide();
