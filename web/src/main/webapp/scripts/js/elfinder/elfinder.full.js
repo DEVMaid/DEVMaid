@@ -11,6 +11,23 @@
 
 
 /*
+	*	Returns 0 if the operation is within the same window
+		Returns -1 if the operation is copying from local to remote
+		Returns 1 if the operation is copying from remote to local
+	*/
+	$.detectDragDropOperation = function (h1, h2) {
+		if (h1.toLowerCase().indexOf("localsource")>-1 && h2.toLowerCase().indexOf("remotesource")>-1) {
+			//This is copying from local to remote
+			return -1;
+		} else if (h1.toLowerCase().indexOf("localsource")>-1 && h2.toLowerCase().indexOf("remotesource")>-1) {
+			return 1;
+		} else {
+			return 0;
+		}			
+	};
+
+
+/*
 * File: /Users/ken/workspace/elFinder/js/elFinder.js
 */
 		;
@@ -746,7 +763,7 @@ window.elFinder = function(node, opts) {
 			return helper;
 		}
 	};
-	
+
 	/**
 	 * Base droppable options
 	 *
@@ -761,6 +778,7 @@ window.elFinder = function(node, opts) {
 				var dst     = $(this),
 					targets = $.map(ui.helper.data('files')||[], function(h) { return h || null }),
 					result  = [],
+					localToRemoteResult  = [],
 					dups    = [],
 					unlocks = [],
 					isCopy  = (e.ctrlKey||e.shiftKey||e.metaKey||ui.helper.data('locked'))? true : false,
@@ -780,11 +798,21 @@ window.elFinder = function(node, opts) {
 				
 				while (cnt--) {
 					h = targets[cnt];
-					// ignore drop into itself or in own location
-					if (h != hash && files[h].phash != hash) {
-						result.push(h);
+					operation=$.detectDragDropOperation(h, hash);
+					if (operation==-1) {
+						//This is copying from local to remote
+						localToRemoteResult.push(h);
+					} else if (operation==1) {
+						//This is copying from remote to local
+						//ToBeImplemented...
 					} else {
-						((isCopy && h !== hash && files[hash].write)? dups : unlocks).push(h);
+						//Else, normal case
+						// ignore drop into itself or in own location
+						if (h != hash && files[h].phash != hash) {
+							result.push(h);
+						} else {
+							((isCopy && h !== hash && files[hash].write)? dups : unlocks).push(h);
+						}
 					}
 				}
 				unlocks.length && self.trigger('unlockfiles', {files: unlocks});
@@ -800,6 +828,14 @@ window.elFinder = function(node, opts) {
 						self.trigger('unlockfiles', {files : targets});
 					});
 					self.trigger('drop', {files : targets});
+				}
+
+				if(localToRemoteResult.length) {
+					self.trigger('unlockfiles', {files: localToRemoteResult});	//Also unlock the files
+					self.exec('opensss');
+					//ui.helper.hide();
+					//self.exec('duplicate', localToRemoteResult);
+					//alert(localToRemoteResult);
 				}
 			}
 		};
@@ -6812,14 +6848,23 @@ $.fn.elfindercwd = function(fm, options) {
 						hash  = cwd.hash,
 						$this = $(this);
 					$.each(ui.helper.data('files'), function(i, h) {
-						if (h === hash || fm.file(h).phash === hash) {
-							if (h !== hash && cwd.write) {
-								$this.data('dropover', true);
-							}
-							if (!$this.data('dropover') || !ui.helper.hasClass('elfinder-drag-helper-plus')) {
-								$this.removeClass(clDropActive);
-							}
+						operation = $.detectDragDropOperation(h, hash);
+						if (operation != 0) {
+							//$this.data('dropover', true);
+							//$this.removeClass(clDropActive);
+							//return false;
+							//target.draggable('enable');
 							return false;
+						} else {
+							if (h === hash || fm.file(h).phash === hash){
+								if (h !== hash && cwd.write) {
+									$this.data('dropover', true);
+								}
+								if (!$this.data('dropover') || !ui.helper.hasClass('elfinder-drag-helper-plus')) {
+									$this.removeClass(clDropActive);
+								}
+								return false;
+							}
 						}
 					});
 				},
