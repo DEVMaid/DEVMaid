@@ -158,21 +158,32 @@ class SshManager(val config: Configuration) extends FileSynchronizer with Log {
       case None => false
     }
   }
-  
-  def scp(fSource: String, fDest: String): Boolean = {
+
+  /*
+   * mode: 
+   *    -1 means copying from local host to remote
+   *    0 means copying from remote to remote
+   *    1 means copying from remote to local
+   */
+  def scp(fSource: String, fDest: String, mode: Int = 0): Boolean = {
     val sshClient = createSSHClient()
     val sshKeyFile = sshClient.keyfile
-    val connectionString = sshClient.login + "@" + 
-    sshClient.hostname + ":" + fSource
-    
+    val connectionString = sshClient.login + "@" + sshClient.hostname + ":"
+    val scpCommand = mode match {
+      case 0 | 1 => 
+        Seq("scp", "-i", sshKeyFile,  connectionString  + fSource, fDest)
+      case -1 => 
+        Seq("scp", "-i", sshKeyFile, fSource, connectionString + fDest)
+    }
+
     //Now make sure the fDest parent directory exists
-    Util.ensureParentDir(fDest)
-    
-    val scpCommand = Seq("scp", "-i", sshKeyFile, connectionString, fDest)
-    info("scp command executing: " + scpCommand)
-    scpCommand.! == 0
+    if (mode == 0 || mode == 1) {
+      Util.ensureParentDir(fDest)
+    }
+    info("scp command executing: " + scpCommand.toString)
+    return scpCommand.! == 0
   }
-  
+
 }
 
 object SshManager extends Log {

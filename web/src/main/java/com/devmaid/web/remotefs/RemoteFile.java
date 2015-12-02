@@ -367,7 +367,7 @@ public class RemoteFile extends java.io.File {
 	public boolean scpFrom(String sourcePath) {
 		String destPathWithSourceFileName = Util.joinPath(this._p, Util.getFileName(sourcePath));
 		UtilWeb.info("In RemoteFile scpFrom, sourcePath: "+sourcePath+", destPathWithSourceFileName: " + destPathWithSourceFileName);
-		return SshClient.scp(sourcePath, destPathWithSourceFileName, _connectionIndex);
+		return SshClient.scpFrom(sourcePath, destPathWithSourceFileName, _connectionIndex);
 	}
 
 }

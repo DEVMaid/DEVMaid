@@ -840,9 +840,14 @@ window.elFinder = function(node, opts) {
 					).done(function(data) {
 						//alert("done...");
 						self.exec('open', hash);
+						//ui.draggable.removeClass("ui-draggable-disabled ui-state-disabled");
+						ui.draggable.parent().removeClass("ui-draggable-disabled ui-state-disabled");
+						ui.draggable.parent().children().removeClass("ui-draggable-disabled ui-state-disabled");
+						ui.helper.hide();
 					}).always(
 						function(data) {
-							self.exec('open', hash);
+							//self.exec('open', hash);
+							//ui.draggable.removeClass("ui-draggable-disabled")
 						}
 					);
 					//ui.helper.hide();

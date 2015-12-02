@@ -56,7 +56,11 @@ object SshClient extends Log {
   }
 
   def scp(fSource: String, fDest: String,connectionIndex: Int): Boolean = {
-    return sshManagers(connectionIndex).scp(fSource, fDest)
+    return sshManagers(connectionIndex).scp(fSource, fDest, 0)
+  }
+  
+  def scpFrom(fSource: String, fDest: String,connectionIndex: Int): Boolean = {
+    return sshManagers(connectionIndex).scp(fSource, fDest, -1)
   }
   
   def write(file: String, content: String, connectionIndex: Int, sourceIndex: Int, isAbsolutePath: Boolean = false): String = {

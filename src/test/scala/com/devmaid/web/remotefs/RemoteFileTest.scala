@@ -30,15 +30,14 @@ import com.devmaid.web.ssh.SshClient
 import org.scalatest.{ FunSpec, Matchers }
 import org.scalatest.Tag
 
-
 class RemoteFileTest extends FunSpec with BaseSpec with Matchers with Log {
 
   val TEST_RESOURCES_BASE = List[String]("/tmp/devmaid/RemoteFileTest")
-  
+
   //This code is to create a sshClient test connection
   val modifiedConfigurations = BaseSpec.modifiyConfigurationsWithCurrentUserAccount(configurations)
   SshClient.setConfigFiles(modifiedConfigurations)
-  
+
   it("test constructing a remote file with basic functionalities like listFiles() and find()", Tag("RemoteFileTest_Basic")) {
     val FILE1 = Util.joinPath(TEST_RESOURCES_BASE(0), "a/testa.txt")
     val FILE2 = Util.joinPath(TEST_RESOURCES_BASE(0), "a/b/testb.txt")
@@ -50,18 +49,18 @@ class RemoteFileTest extends FunSpec with BaseSpec with Matchers with Log {
     writeToFile(FILE2, "Content-" + FILE2)
     writeToFile(FILE3, "Content-" + FILE3)
     writeToFile(FILE3_1, "Content-" + FILE3_1)
-    
+
     val rf = new RemoteFile(TEST_RESOURCES_BASE(0))
-    
+
     val rf_testc = rf.find("testc.txt")
-    assert(rf_testc.size == 1 && rf_testc(0).getFileName==FILE3)
-    
+    assert(rf_testc.size == 1 && rf_testc(0).getFileName == FILE3)
+
     val rf_test_star = rf.find("test*.txt")
-    
-    assert(rf_test_star.size==3)
-    
+
+    assert(rf_test_star.size == 3)
+
   }
-  
+
   it("test a remote file with advanced functionalities like editing..etc", Tag("RemoteFileTest_Advanced_Editing")) {
     reset(TEST_RESOURCES_BASE, "", true)
     val HELLOPATH = Util.joinPath(TEST_RESOURCES_BASE(0), "editTest/hello.txt")
@@ -72,19 +71,33 @@ class RemoteFileTest extends FunSpec with BaseSpec with Matchers with Log {
     val actualContent = rf.cat()
     info("expectedContent: " + expectedContent)
     info("actualContent: " + actualContent)
-    assert(expectedContent==actualContent)
+    assert(expectedContent == actualContent)
   }
-  
+
   it("test a remote file with scp functionality", Tag("RemoteFileTest_scp")) {
     val fileName = "try.png"
-    val rawpath = Util.joinPath(TEST_RESOURCES_BASE(0), "scpSourceTest/"+fileName)
+    val rawpath = Util.joinPath(TEST_RESOURCES_BASE(0), "scpSourceTest/" + fileName)
     writeToFile(rawpath, "binarycontent...")
     val rf = new RemoteFile(rawpath)
-    val destPath = Util.joinPath(TEST_RESOURCES_BASE(0), "scpDestTest/"+fileName)
+    val destPath = Util.joinPath(TEST_RESOURCES_BASE(0), "scpDestTest/" + fileName)
     val scpResult = rf.scp(destPath)
-     assert(scpResult)
-     assert(fileExists(destPath))
-     
+    assert(scpResult)
+    assert(fileExists(destPath))
+
+  }
+
+  it("test a remote file with scpFrom functionality", Tag("RemoteFileTest_scpFrom")) {
+    val fileName = "try1.png"
+    val remoteDestDir = Util.joinPath(TEST_RESOURCES_BASE(0), "scpDestTest/")
+    ensureDir(remoteDestDir)
+    val rf = new RemoteFile(remoteDestDir)
+    val sourcePath = Util.joinPath(TEST_RESOURCES_BASE(0), "scpSourceTest/" + fileName)
+    writeToFile(sourcePath, "binarycontent...")
+    val scpFromResult = rf.scpFrom(sourcePath)
+    assert(scpFromResult)
+    val remoteDestPath = Util.joinPath(remoteDestDir, fileName)
+    assert(fileExists(remoteDestPath))
+
   }
 
 }
