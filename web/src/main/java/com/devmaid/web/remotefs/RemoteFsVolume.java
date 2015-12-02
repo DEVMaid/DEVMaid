@@ -23,7 +23,6 @@ Copyright (c) 2015 DEVMaid
 package com.devmaid.web.remotefs;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -117,7 +116,7 @@ public class RemoteFsVolume implements FsVolume {
 
 	@Override
 	public FsItem fromPath(String relativePath) {
-		String absolutePath = Util.joinPath(_rootDir.getFile(), relativePath);
+		String absolutePath = Util.joinPath(_rootDir.getFileName(), relativePath);
 		RemoteFile childrenFromRoot = findChilden(_rootDir, absolutePath);
 		UtilWeb.debug("In RemoteFsVolume fromPath, given relativePath: " + relativePath + ", childrenFromRoot: "
 				+ childrenFromRoot);
@@ -128,7 +127,7 @@ public class RemoteFsVolume implements FsVolume {
 
 			// Here i am looking for the parent dir
 			String parentRelativePath = Util.getParentPath(relativePath);
-			String parentAbsolutePath = Util.joinPath(_rootDir.getFile(), parentRelativePath);
+			String parentAbsolutePath = Util.joinPath(_rootDir.getFileName(), parentRelativePath);
 			RemoteFile parentFromRoot = findChilden(_rootDir, parentAbsolutePath);
 			UtilWeb.debug("In RemoteFsVolume fromPath, given relativePath: " + relativePath + ", parentFromRoot: "
 					+ parentFromRoot);
@@ -147,7 +146,7 @@ public class RemoteFsVolume implements FsVolume {
 	private RemoteFile findChilden(RemoteFile startFrom, String absolutePath) {
 		if (startFrom.getCanonicalPath().equals(absolutePath))
 			return startFrom;
-		if (absolutePath.indexOf(startFrom.getFile()) > -1) {
+		if (absolutePath.indexOf(startFrom.getFileName()) > -1) {
 			RemoteFile[] rfs = startFrom.listFiles();
 			for (int i = 0; i < rfs.length; i++) {
 				if (rfs[i].getCanonicalPath().equals(absolutePath)) {
@@ -255,7 +254,7 @@ public class RemoteFsVolume implements FsVolume {
 	public boolean hasChildFolder(FsItem fsi) {
 		return asFile(fsi).isDirectory() && asFile(fsi).listFiles(new FileFilter() {
 			@Override
-			public boolean accept(File arg0) {
+			public boolean accept(java.io.File arg0) {
 				return arg0.isDirectory();
 			}
 		}).length > 0;

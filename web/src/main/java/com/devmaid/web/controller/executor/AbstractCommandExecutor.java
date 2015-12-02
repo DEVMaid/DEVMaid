@@ -106,7 +106,7 @@ public abstract class AbstractCommandExecutor implements CommandExecutor
 	public void execute(CommandExecutionContext ctx) throws Exception
 	{
 		FsService fileService = ctx.getFsServiceFactory().getFileService(
-				ctx.getRequest(), ctx.getServletContext());
+				ctx.getRequest(), ctx.getServletContext(), ctx.isRemote());
 		execute(fileService, ctx.getRequest(), ctx.getResponse(),
 				ctx.getServletContext());
 	}
