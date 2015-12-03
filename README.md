@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/DEVMaid/DEVMaid.svg?branch=master)](https://travis-ci.org/DEVMaid/DEVMaid.svg)
 
-### This software is to increase the efficiency and productivity in all software developments by automatic running deployments or synchronizing between a local server to all remote server(s)
+### This software is to increase the efficiency and productivity in all software developments by unifying local and remote servers all in once concepts.
 
 #### Why and What?
 Have you ever feel tired of only changing one line of the source file and deploying it to all remote servers manually – such as copying the source and ssh into the remote host and vi that file and paste it and save it, or switching to the deploy terminals to run the build?  These operations usually involves at least 5-10 keystrokes but in the long run this does not increase the productivity at all but fatigue and frustrations.  With this software, let say whenever you are done with editing the source/config files on your local work machine, you can set it up to:

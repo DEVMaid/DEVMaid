@@ -10,6 +10,10 @@
 		<link rel="stylesheet" type="text/css" href="/stylesheets/jquery-ui.css">
 		<script src="/scripts/jquery/jquery.min.js"></script>
 		<script src="/scripts/jquery/jquery-ui.min.js"></script>
+		
+		<!-- easytabs related scripts-->
+		<script src="/scripts/jquery/jquery.hashchange.min.js"></script>
+		<script src="/scripts/js/easytabs/jquery.easytabs.js"></script>
 
 		<!-- elFinder CSS (REQUIRED) -->
 		<link rel="stylesheet" type="text/css" href="/stylesheets/elfinder/elfinder.full.css">
@@ -39,6 +43,23 @@
 		</script>
 		
 		
+		<style>
+    /* Example Styles for Demo */
+    .etabs { margin: 0; padding: 0; }
+    .tab { display: inline-block; zoom:1; *display:inline; background: #eee; border: solid 1px #999; border-bottom: none; -moz-border-radius: 4px 4px 0 0; -webkit-border-radius: 4px 4px 0 0; }
+    .tab a { font-size: 14px; line-height: 2em; display: block; padding: 0 10px; outline: none; }
+    .tab a:hover { text-decoration: underline; }
+    .tab.active { background: #fff; padding-top: 6px; position: relative; top: 1px; border-color: #666; }
+    .tab a.active { font-weight: bold; }
+    .tab-container .panel-container { background: #fff; border: solid #666 1px; padding: 10px; -moz-border-radius: 0 4px 4px 4px; -webkit-border-radius: 0 4px 4px 4px; }
+    .panel-container { margin-bottom: 10px; }
+  </style>
+
+  <script type="text/javascript">
+    $(document).ready( function() {
+      $('#tab-container').easytabs();
+    });
+  </script>
 
 
 </head>
@@ -64,12 +85,25 @@
 			${localhostrep}
 			</a></h2>
 		
-			<div class="articles">
 
-				<!-- Element where elFinder will be created (REQUIRED) !--> 
-				<div id="elfinder" style="width: 950px"></div>
+				<div id="tab-container" class='tab-container'>
+				 	<ul class='etabs'>
+				   		<li class='tab'><a href="#tabs1-fileBrowser">File Browser</a></li>
+				   		<li class='tab'><a href="#tabs1-terminal">Terminal</a></li>
+				 	</ul>
+				 	<div class='panel-container'>
+				  		<div id="tabs1-fileBrowser">
+				   			<!-- Element where elFinder will be created (REQUIRED) !--> 
+							<div id="elfinder" style="width: 950px"></div>
+						</div>
+				  		<div id="tabs1-terminal">
+				   			<h2>Terminal</h2>
 				
-			</div>
+				  		</div>
+				  
+				 	</div>
+				</div>
+			
 			<br/>
 			<h2>Remote:</h2>
 		
@@ -85,8 +119,7 @@
 			<div style="clear: both;"> </div>
 		
 	</div>
-
-
+	
 	
 	Copyright <a href="https://github.com/wwken/DEVMaid">DEVMaid</a> 2015-2016
 	
