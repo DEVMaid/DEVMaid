@@ -57,7 +57,8 @@
 
   <script type="text/javascript">
     $(document).ready( function() {
-      $('#tab-container').easytabs();
+      $('#tab-container-local').easytabs();
+      $('#tab-container-remote').easytabs();
     });
   </script>
 
@@ -86,7 +87,7 @@
 			</a></h2>
 		
 
-				<div id="tab-container" class='tab-container'>
+				<div id="tab-container-local" class='tab-container'>
 				 	<ul class='etabs'>
 				   		<li class='tab'><a href="#tabs1-fileBrowser">File Browser</a></li>
 				   		<li class='tab'><a href="#tabs1-terminal">Terminal</a></li>
@@ -107,17 +108,23 @@
 			<br/>
 			<h2>Remote:</h2>
 		
-			<div class="articles">
+				<div id="tab-container-remote" class='tab-container'>
+				 	<ul class='etabs'>
+				   		<li class='tab'><a href="#tabs1-fileBrowser-remote">File Browser</a></li>
+				   		<li class='tab'><a href="#tabs1-terminal-remote">Terminal</a></li>
+				 	</ul>
+				 	<div class='panel-container'>
+				  		<div id="tabs1-fileBrowser-remote">
+				   			<!-- Element where elFinder will be created (REQUIRED) !--> 
+							<div id="elfinder_remote" style="width: 950px"></div>
+						</div>
+				  		<div id="tabs1-terminal-remote">
+				   			...Terminal...
+				  		</div>
+				 	</div>
+				</div> 
 
-				
-				<!-- Element where elFinder will be created (REQUIRED) !-->
-				<div id="elfinder_remote" style="width: 950px"></div>
-				 
-
-			</div>
-
-			<div style="clear: both;"> </div>
-		
+					
 	</div>
 	
 	
