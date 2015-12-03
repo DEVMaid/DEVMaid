@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSON-RPC Demo for JQuery Terminal Emulator</title>
+    <meta name="author" content="Jakub Jankiewicz - jcubic&#64;onet.pl"/>
+    <meta name="Description" content="Demonstration for JQuery Terminal Emulator using call automaticly JSON-RPC service (in php) with authentication."/>
+    <link rel="sitemap" type="application/xml" title="Sitemap" href=""/>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <script src="/scripts/jquery/jquery-1.7.1.min.js"></script>
+    <script src="/scripts/jquery/jquery.mousewheel-min.js"></script>
+    <script src="/scripts/jquery/jquery.terminal-min.js"></script>
+    <link href="/stylesheets/terminal/jquery.terminal.css" rel="stylesheet"/>
+  </head>
+<body>
+
+
+Terminal: 
+<div id="terminal">
+
+
+</div>
+
+
+<script>
+jQuery(document).ready(function($) {
+    var id = 1;
+    $('body').terminal(function(command, term) {
+                $.jrpc("mysql-rpc-demo.php",
+                       "query",
+                       [command],
+                       function(data) {
+                           term.resume();
+                           if (data.error && data.error.message) {
+                               term.error(data.error.message);
+                           } else {
+                               if (typeof data.result == 'boolean') {
+                                   term.echo(data.result ? 'success' : 'fail');
+                               } else {
+                                   var len = data.result.length;
+                                   for(var i=0;i<len; ++i) {
+                                       term.echo(data.result[i].join(' | '));
+                                   }
+                               }
+                           }
+                       },
+                       function(xhr, status, error) {
+                           term.error('[AJAX] ' + status +
+                                      ' - Server reponse is: \n' +
+                                      xhr.responseText);
+                           term.resume();
+                       });
+        
+    }, {
+        greetings: "multiply terminals demo use help to see available commands",
+        onBlur: function() {
+            // prevent loosing focus
+            return false;
+        }
+    });
+});
+
+</script>
+
+</body>
+

@@ -35,7 +35,7 @@
 					// , lang: 'ru'                    // language (OPTIONAL)
 				});
 				
-				$('#elfinder_remote').elfinder({
+				$('#elfinder-remote').elfinder({
 					url : 'elfinder-servlet/connector-remote',
 					// , lang: 'ru'                    // language (OPTIONAL)
 				});
@@ -53,29 +53,48 @@
     .tab a.active { font-weight: bold; }
     .tab-container .panel-container { background: #fff; border: solid #666 1px; padding: 10px; -moz-border-radius: 0 4px 4px 4px; -webkit-border-radius: 0 4px 4px 4px; }
     .panel-container { margin-bottom: 10px; }
+    
+    .wrap { width:90%; margin: 0 auto;}
+    .iFrameTerminal { width: 100%; height: 400px}
   </style>
 
   <script type="text/javascript">
-    $(document).ready( function() {
-      $('#tab-container-local').easytabs();
-      $('#tab-container-remote').easytabs();
-    });
+  
+	$(document).ready( function() {
+		
+		$("#elfinder").resize(function() {
+			var w = Math.max(800, $("#elfinder").width()+25);
+			$("#wrap-local").width(w);
+			//var h = Math.min(500, $("#elfinder").height()+25);
+			//$("#wrap-local").height(w);
+		});
+	
+		$("#elfinder-remote").resize(function() {
+			var w = Math.max(800, $("#elfinder-remote").width()+25);
+  			$("#wrap-remote").width(w);
+  			//var h = Math.min(500, $("#elfinder-remote").height()+25);
+  			//$("#wrap-remote").height(w);
+		});
+		
+		$('#tab-container-local').easytabs();
+		$('#tab-container-remote').easytabs();
+	});
   </script>
 
 
 </head>
 <body>
 
-<div id="wrap">
 
-	<div id="header">
+
+	<div id="header" style="margin-left: 80px">
 	<h1><a href="#">DEVMaid Web</a></h1>
 	<h2>A tool that increases your development productivity and efficience</h2>
 	</div>
 
- 	<div id="content">
+<div id="content" style="margin-left: 80px">
   		
-
+  <div id="wrap-local" class="wrap">
 			<h2>Local: <a href="#">
 			<%
 			
@@ -98,13 +117,13 @@
 							<div id="elfinder" style="width: 950px"></div>
 						</div>
 				  		<div id="tabs1-terminal">
-				   			<h2>Terminal</h2>
-				
+				   			<iframe src="./terminal-local.html" class="iFrameTerminal"></iframe>
 				  		</div>
 				  
 				 	</div>
 				</div>
-			
+  </div>
+  <div id="wrap-remote" class="wrap">
 			<br/>
 			<h2>Remote:</h2>
 		
@@ -116,20 +135,20 @@
 				 	<div class='panel-container'>
 				  		<div id="tabs1-fileBrowser-remote">
 				   			<!-- Element where elFinder will be created (REQUIRED) !--> 
-							<div id="elfinder_remote" style="width: 950px"></div>
+							<div id="elfinder-remote" style="width: 950px"></div>
 						</div>
 				  		<div id="tabs1-terminal-remote">
-				   			...Terminal...
+				   			<iframe src="./terminal-remote.html" class="iFrameTerminal"></iframe>
 				  		</div>
 				 	</div>
 				</div> 
 
 					
-	</div>
+
 	
 	
 	Copyright <a href="https://github.com/wwken/DEVMaid">DEVMaid</a> 2015-2016
-	
+  </div>
 </div>
 
 </body>
