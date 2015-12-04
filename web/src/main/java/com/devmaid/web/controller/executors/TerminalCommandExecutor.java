@@ -33,17 +33,17 @@ import com.devmaid.web.controller.executor.CommandExecutionContext;
 import com.devmaid.web.controller.executor.CommandExecutor;
 import com.devmaid.web.service.FsService;
 import com.devmaid.web.data.TerminalRequest;
+import com.devmaid.web.data.TerminalResponse;
+import com.devmaid.web.ssh.SshClient;
 
 public class TerminalCommandExecutor extends AbstractJsonCommandExecutor implements CommandExecutor {
 	@Override
 	public void execute(CommandExecutionContext ctx) throws Exception {
 		TerminalRequest tRequest = ctx.getTerminalRequest();
 		JSONObject json = new JSONObject();
-		//Map<String, FsItemEx> files = new HashMap<String, FsItemEx>();
-		//FsItemEx fsi = super.findItem(fsService, target);
-		//super.addSubfolders(files, fsi);
-
-		json.put("result", "wowowowoww");
+		TerminalResponse tResponse = SshClient.exec(tRequest.currentDir(), tRequest.command(), tRequest.connectionIndex());
+		json.put("result", tResponse.getOutput());
+		json.put("resultWorkingDir", tResponse.getResultWorkingDir());
 		flushJSONResponse(ctx.getResponse(), json, false);
 	}
 

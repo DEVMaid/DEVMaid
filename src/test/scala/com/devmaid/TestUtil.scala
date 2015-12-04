@@ -93,5 +93,22 @@ object TestUtil extends Log {
     pw.close
   }
 
+  def areTwoPathsTheSame(p1: String, p2: String): Boolean = {
+    def r(p:String): String = p takeRight 1
+    if(r(p1)=="/") {
+      if(r(p2)=="/") {
+        return p1 == p2
+      } else {
+        return p1 == (p2+"/")
+      }
+    } else {
+      if(r(p2)=="/") {
+        return p1 == (p2 take p2.length-1)
+      } else {
+        return p1 == p2
+      }
+    }
+  }
+  
 }
 

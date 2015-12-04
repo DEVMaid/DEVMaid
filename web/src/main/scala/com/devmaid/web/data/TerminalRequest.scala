@@ -22,4 +22,4 @@ Copyright (c) 2015 Ken Wu
 
 package com.devmaid.web.data
 
-case class TerminalRequest(currentDir: String, command: String)
+case class TerminalRequest(currentDir: String, command: String, connectionIndex: Int = 0)

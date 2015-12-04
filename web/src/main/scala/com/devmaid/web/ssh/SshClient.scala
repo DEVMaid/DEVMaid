@@ -29,6 +29,7 @@ import com.devmaid.web.util.Log
 import com.devmaid.common.config.Configuration
 import com.devmaid.common.file.ssh.SshManager
 import com.devmaid.web.JettyLauncher
+import com.devmaid.web.data.TerminalResponse;
 
 object SshClient extends Log {
   var configFiles = None: Option[List[Configuration]] //This needs to be externally set
@@ -66,6 +67,15 @@ object SshClient extends Log {
   def write(file: String, content: String, connectionIndex: Int, sourceIndex: Int, isAbsolutePath: Boolean = false): String = {
     val result = sshManagers(connectionIndex).write(file, content, sourceIndex, isAbsolutePath)
     result.message.getOrElse("")
+  }
+  
+  /*
+   * Executes an arbitrary command on a working Directory and then return a TerminalResponse object
+   */
+  def exec(currentWorkingDir: String, command: String, connectionIndex: Int): TerminalResponse = {
+    val result = sshManagers(connectionIndex).exec(currentWorkingDir, command)
+    val tR = new TerminalResponse(result.isSucess(), result.message, result.resultWorkingDir)
+    tR
   }
 
 }

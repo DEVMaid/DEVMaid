@@ -22,9 +22,13 @@ Copyright (c) 2015 Ken Wu
 
 package com.devmaid.common.file
 
-case class RemoteResult(status: String, message: Option[String] = None){
+case class RemoteResult(status: String, message: Option[String] = None, resultWorkingDir: Option[String] = None){
   override def toString: String = {
-    "status = " + status + message.map(s => "; message = " + s).getOrElse("")
+    "->status = " + status + message.map(s => "; message = " + s).getOrElse("") + resultWorkingDir.map(s => "; resultWorkingDir = " + s).getOrElse("")
+  }
+  
+  def isSucess() : Boolean = {
+    status == RemoteResult.SUCESS
   }
 }
 
