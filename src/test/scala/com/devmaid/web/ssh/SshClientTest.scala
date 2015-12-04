@@ -42,7 +42,8 @@ class SshClientTest extends FunSpec with BaseSpec with Matchers with Log {
     reset(TEST_RESOURCES_BASE, "", true)
     val curDir = Util.joinPath(TEST_RESOURCES_BASE(0), "currentDir/")
     val parentDir = Util.joinPath(TEST_RESOURCES_BASE(0), "")
-    val command = "echo 'going back to parent' && cd .. "
+    val msg = "going back to parent"
+    val command = "echo '"+msg+"' && cd .. "
     val connectionIndex=0
     val tRFail = SshClient.exec(curDir, command, connectionIndex);
 
@@ -52,8 +53,8 @@ class SshClientTest extends FunSpec with BaseSpec with Matchers with Log {
     ensureDir(curDir)  //Now create the directory and re-execing the previous command
     val tRSucess = SshClient.exec(curDir, command, connectionIndex);
     assert(tRSucess.sucess)
+    assert(tRSucess.getOutput==msg)
     assert(areTwoPathsTheSame(tRSucess.getResultWorkingDir, parentDir))
-    
     
   }
 

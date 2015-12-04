@@ -78,14 +78,21 @@ class RichSshClient(val sshDaemon: SSHDaemon) extends Log {
   }
 
   def execAndRetrieveWorkingDir(command: String, curWorkingDir: String): RemoteResult = {
-      val execResult = execNonPlain("cd " + curWorkingDir + " && " + command + " && pwd")  //Append the getting current directory command at the end
-      debug("In execAndRetrieveWorkingDir, execResult:" + execResult + ", execResult._2:" + execResult._2 + ", lastIndexOfNewLine:" + execResult._2.lastIndexOf("\n"))
+      def stripFrontAndRear(s: String) : String = {
+        return s.substring(1, s.length()-1)
+      }
+      val sCommand = stripFrontAndRear(command)
+      val sCurWorkingDir = stripFrontAndRear(curWorkingDir)
+      val finalWholeCommand = ((new StringBuilder("cd ")).append(sCurWorkingDir).append(" && ").append(sCommand).append(" && pwd")).toString 
+      val execResult = execNonPlain(finalWholeCommand)  //Append the getting current directory command at the end
+      debug("In execAndRetrieveWorkingDir, finalWholeCommand: "+finalWholeCommand+", execResult:" + execResult + ", execResult._2:" + execResult._2 + ", lastIndexOfNewLine:" + execResult._2.lastIndexOf("\n"))
       val remoteResult = execResult._1 match {
         case 0 => {
           val rawContents = execResult._2.substring(0, execResult._2.length()-1)  //This trim out a new line character at the end
-          val contents = rawContents.substring(0, rawContents.lastIndexOf("\n")-1);
+          debug("In execAndRetrieveWorkingDir, rawContents:" + rawContents)
+          val contents = rawContents.substring(0, (rawContents take rawContents.length-2).lastIndexOf("\n"));
           val resultedWorkingDir = rawContents.substring(rawContents.lastIndexOf("\n")+1);
-         new RemoteResult(RemoteResult.SUCESS, Some(rawContents), Some(resultedWorkingDir)) 
+         new RemoteResult(RemoteResult.SUCESS, Some(contents), Some(resultedWorkingDir)) 
         }
         case _ => new RemoteResult(RemoteResult.ERROR, Some(execResult._2), None)
       }
