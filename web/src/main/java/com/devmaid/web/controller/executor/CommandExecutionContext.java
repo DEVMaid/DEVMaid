@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.devmaid.web.service.FsServiceFactory;
+import com.devmaid.web.data.TerminalRequest;
 
 public interface CommandExecutionContext
 {
@@ -17,4 +18,6 @@ public interface CommandExecutionContext
 	ServletContext getServletContext();
 
 	boolean isRemote();
+	
+	TerminalRequest getTerminalRequest();
 }
