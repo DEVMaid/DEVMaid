@@ -3,13 +3,13 @@ This script is being called by the inner html for initializing the terminal
 It must be placed after the jquery.terminal*.js script
 */
 
-function init(rpcDest) {
+function init(rpcDest, initWelcomeMessage, initPrompt) {
   jQuery(document).ready(function($) {
     var id = 1;
     $('body').terminal(function(command, term) {
                 $.jrpc(rpcDest,
                        "terminal",
-                       [command],
+                       [$('#hidCurrentWorkingDir').val(), command],
                        function(data) {
                            //alert("data: " + data);
                            term.resume();
@@ -31,7 +31,8 @@ function init(rpcDest) {
                        });
         
     }, {
-        greetings: "multiply terminals demo use help to see available commands",
+        greetings: "Welcome to DEVMaid Web Terminal at " + initWelcomeMessage,
+        prompt: initPrompt + "$ ", 
         onBlur: function() {
             // prevent loosing focus
             return false;

@@ -123,6 +123,11 @@ class SshManager(val config: Configuration) extends FileSynchronizer with Log {
     _exec("echo \"" + content + "\" > " + file + " ")
   }
 
+  def exec(currentWorkingDir: String, commandToBeExecuted: String): RemoteResult = {
+    val preResult = _exec("cd " + currentWorkingDir)
+    return _exec(commandToBeExecuted)
+  }
+  
   private def _exec(command: String): RemoteResult = {
     val sshClient = createSSHClient()
     var r = ""

@@ -117,7 +117,7 @@
 							<div id="elfinder" style="width: 950px"></div>
 						</div>
 				  		<div id="tabs1-terminal">
-				   			<iframe src="./terminal-local.html" class="iFrameTerminal"></iframe>
+				   			<iframe src="./terminal-local.ssp" class="iFrameTerminal"></iframe>
 				  		</div>
 				  
 				 	</div>
@@ -138,7 +138,7 @@
 							<div id="elfinder-remote" style="width: 950px"></div>
 						</div>
 				  		<div id="tabs1-terminal-remote">
-				   			<iframe src="./terminal-remote.html" class="iFrameTerminal"></iframe>
+				   			<iframe src="./terminal-remote.ssp" class="iFrameTerminal"></iframe>
 				  		</div>
 				 	</div>
 				</div> 

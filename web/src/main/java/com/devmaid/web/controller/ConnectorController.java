@@ -27,13 +27,14 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import scala.Option;
+
 import com.devmaid.common.Util;
 import com.devmaid.web.controller.executor.CommandExecutionContext;
 import com.devmaid.web.controller.executor.CommandExecutor;
 import com.devmaid.web.controller.executor.CommandExecutorFactory;
 import com.devmaid.web.service.FsServiceFactory;
 import com.devmaid.web.util.UtilWeb;
-
 import com.devmaid.web.data.TerminalRequest;
 
 @Controller
@@ -218,13 +219,14 @@ public class ConnectorController {
 		} catch (Exception e) { /* report an error */
 		}
 
-		String command = UtilWeb.processTerminalRequestJson(jb.toString());
-		if(!Util.isEmpty(command)) {
-			return new TerminalRequest("", command);
-		} else {
-			return null;
-		}
+		Option<TerminalRequest> tR = UtilWeb.processTerminalRequestJson(jb.toString());
+		//test(tR);
+		return (tR.isEmpty())?null:tR.get();
 	}
+	
+	//private void test(Option<TerminalRequest> t) {
+	//	System.out.println("tR: " + t);
+	//}
 
 	public void setCommandExecutorFactory(CommandExecutorFactory _commandExecutorFactory) {
 		this._commandExecutorFactory = _commandExecutorFactory;
