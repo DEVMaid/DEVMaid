@@ -57,15 +57,18 @@ object UtilWeb extends Log {
   }
 
   def processTerminalRequestJson(jsonStr: String): Option[TerminalRequest] = {
+    def stripFrontAndRear(s: String): String = {
+      return s.substring(1, s.length() - 1)
+    }
     try {
-      if(Util.isEmpty(jsonStr))
+      if (Util.isEmpty(jsonStr))
         return None;
       val jsonObject = new JSONObject(jsonStr);
       if (jsonObject.getString("method") == "terminal") {
         var results = jsonObject.getString("params");
         results = results.replaceAll("[\\[\\]]", ""); //replace all square brackets
         val resArr = results.split(",")
-        return Some(new TerminalRequest(resArr(0), resArr(1)));
+        return Some(new TerminalRequest(stripFrontAndRear(resArr(0)), stripFrontAndRear(resArr(1))));
       } else {
         error("invalid json object field - method: " + jsonObject.getString("method"));
         return None;
@@ -88,7 +91,7 @@ object UtilWeb extends Log {
   def getUserHome(): String = {
     return System.getProperty("user.home")
   }
-  
+
   def getHostNameRep(userName: String = "", hostName: String = ""): String = {
     val uN = Util.isEmpty(userName) match {
       case true => System.getProperty("user.name")
@@ -106,13 +109,13 @@ object UtilWeb extends Log {
       case true => "~/"
       case false => path
     }
-     getHostNameRep(userName, hostName)+ ":" + p
+    getHostNameRep(userName, hostName) + ":" + p
   }
-  
+
   def beautifyPath(path: String, homeDir: String = getUserHome): String = {
     var rPath = path.replace(homeDir, "~/")
-    rPath=rPath.replace("//", "/")
-    if((rPath takeRight 1)=="/") rPath take rPath.length -1 else rPath
+    rPath = rPath.replace("//", "/")
+    if ((rPath takeRight 1) == "/") rPath take rPath.length - 1 else rPath
   }
 
   def readInputStreamIntoString(is: InputStream): String = {

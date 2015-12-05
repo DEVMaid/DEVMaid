@@ -26,14 +26,16 @@
 <%
 import com.devmaid.web.util.UtilWeb
 import com.devmaid.web.JettyLauncher
+val userHome = UtilWeb.getUserHome()
 val currentWorkingDir = JettyLauncher.sourceRoots(0)
 val initWelcomeMessage = UtilWeb.getHostNameRep()
 val initPrompt = UtilWeb.getHostPathNameRep("","",currentWorkingDir)
 val beautifiedPrompt = UtilWeb.beautifyPath(initPrompt)
 %>
+var userHome = "${userHome}";
 var initWelcomeMessage = "${initWelcomeMessage}";
 var initPrompt = "${beautifiedPrompt}";
-init("elfinder-servlet/connector", initWelcomeMessage, initPrompt);
+init("elfinder-servlet/connector", initWelcomeMessage, initPrompt, userHome);
 </script>
 
 <input type="hidden" id="hidCurrentWorkingDir" name="hidCurrentWorkingDir" value="${currentWorkingDir}">

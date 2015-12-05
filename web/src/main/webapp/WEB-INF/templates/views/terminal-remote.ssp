@@ -23,13 +23,15 @@
 <%
 import com.devmaid.web.util.UtilWeb
 import com.devmaid.web.JettyLauncher
+val userHome = UtilWeb.getUserHome()
 val currentWorkingDir = JettyLauncher.destinationRoots(0)
 val initWelcomeMessage = UtilWeb.getHostNameRep()
 val initPrompt = UtilWeb.getHostPathNameRep(JettyLauncher.connections(0).login,JettyLauncher.connections(0).hostname,currentWorkingDir)
 %>
+var userHome = "${userHome}";
 var initWelcomeMessage = "${initWelcomeMessage}";
 var initPrompt = "${initPrompt}";
-init("elfinder-servlet/connector-remote",initWelcomeMessage,initPrompt);
+init("elfinder-servlet/connector-remote",initWelcomeMessage,initPrompt,userHome);
 </script>
 
 <input type="hidden" id="hidCurrentWorkingDir" name="hidCurrentWorkingDir" value="${currentWorkingDir}">
