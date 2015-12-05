@@ -1,5 +1,6 @@
 package com.devmaid.web.controller.executor;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletContext;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.devmaid.web.controller.ErrorException;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.devmaid.web.service.FsService;
@@ -49,17 +51,23 @@ public abstract class AbstractJsonCommandExecutor extends AbstractCommandExecuto
 		}
 		finally
 		{
-			//response.setContentType("application/json; charset=UTF-8");
-			response.setContentType("text/html; charset=UTF-8");
-
-			PrintWriter writer = response.getWriter();
-			json.write(writer);
-			UtilWeb.instance().debug("in execute, json: " + json);
-			writer.flush();
-			writer.close();
+			flushJSONResponse(response, json, true);
 		}
 	}
 
+	public static void flushJSONResponse(HttpServletResponse response, JSONObject json, boolean outputAsTextHtml) throws IOException, JSONException {
+		if(outputAsTextHtml) {
+			response.setContentType("text/html; charset=UTF-8");
+		} else {
+			response.setContentType("application/json; charset=UTF-8");
+		}
+		PrintWriter writer = response.getWriter();
+		json.write(writer);
+		UtilWeb.instance().debug("In flushJSONResponse, json: " + json);
+		writer.flush();
+		writer.close();
+	}
+	
 	protected abstract void execute(FsService fsService, HttpServletRequest request, ServletContext servletContext,
 			JSONObject json) throws Exception;
 

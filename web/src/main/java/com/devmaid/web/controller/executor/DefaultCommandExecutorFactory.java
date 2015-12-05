@@ -13,7 +13,7 @@ public class DefaultCommandExecutorFactory implements CommandExecutorFactory {
 	@Override
 	public CommandExecutor get(String commandName) {
 		
-		System.out.println("This command name: " + commandName);
+		//System.out.println("This command name: " + commandName);
 		
 		if (_map.containsKey(commandName)) {
 			System.out.println("Contains the command name: " + commandName);

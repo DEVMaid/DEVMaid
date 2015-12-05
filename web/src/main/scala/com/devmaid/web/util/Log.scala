@@ -42,6 +42,10 @@ trait Log {
     _p("[DEBUG]", message, null)
   }
   
+  def error(message:String) : Unit = {
+    _p("[ERROR]", message, null)
+  }
+  
   private def _p(messageType:String, message:String) : Unit = {
     _p(messageType, message, null)
   }
