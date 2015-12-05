@@ -187,4 +187,20 @@ public class DefaultFsService implements FsService {
 		_volumeMap.put(name, fsVolume);
 		Logger.getLogger(this.getClass()).info(String.format("mounted %s: %s", name, fsVolume));
 	}
+
+	/*
+	 * This method retrieve the FsItem from the given hash on the file systems
+	 * 
+	 * @see com.devmaid.web.service.FsService#getFsItem(java.lang.String)
+	 */
+	@Override
+	public FsItem getFsItem(String hash) throws IOException {
+		FsItem f = fromHash(hash);
+		UtilWeb.debug("In DefaultFsService getFsItem, f:" + f);
+		//for (FsVolume vol : _volumeMap.values()) {
+		//	FsItem root = vol.getRoot();
+		//	
+		//}
+		return f;
+	}
 }

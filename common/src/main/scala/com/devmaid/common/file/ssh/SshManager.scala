@@ -30,7 +30,6 @@ import com.devmaid.common.Util
 import scala.io.Source
 import java.io.IOException
 import scala.sys.process._
-
 /*
  * Each SshManager will process a single SSH connection to one host (although various sourceRoots and destination roots)
  */
@@ -83,16 +82,16 @@ class SshManager(val config: Configuration) extends FileSynchronizer with Log {
     var res = sshClient.recursivelyCreatePathIfNotExists(destination, source != null)
     if (source != null) {
       try {
-        res = sshClient.upload(source, destination)
+        val result = sshClient.upload(source, destination)
+        res = RemoteResult(RemoteResult.SUCESS, Some(result))
       } catch {
         case ioe: Exception => {
           debug("In _updateRemoteFile, ERROR -> source: " + source + ", destination: " + destination + " has IOException error: " + ioe)
           return RemoteResult(RemoteResult.ERROR, Some(ioe.toString))
         }
       }
-
     }
-    RemoteResult(RemoteResult.SUCESS, Some(res))
+    return res
   }
 
   /*
@@ -122,19 +121,19 @@ class SshManager(val config: Configuration) extends FileSynchronizer with Log {
     val fullPFilePath = if (isAbsolutePath) file else Util.joinPath(config.destinationRoots(sourceIndex), file)
     _exec("echo \"" + content + "\" > " + file + " ")
   }
-
-  private def _exec(command: String): RemoteResult = {
+  
+  def exec(currentWorkingDir: String, commandToBeExecuted: String): RemoteResult = {
+    return _exec(commandToBeExecuted, true, currentWorkingDir)
+  }
+  
+  private def _exec(command: String, retrieveWorkingDir: Boolean = false, currentWorkingDir: String = ""): RemoteResult = {
     val sshClient = createSSHClient()
-    var r = ""
-    var e = ""
-    r = sshClient.exec(command)
-
-    debug("In _exec, command: " + snapshot(command) + ", result: " + r + ", error: " + e)
-    if (e.length() > 0) {
-      RemoteResult(RemoteResult.ERROR, Some(e))
-    } else {
-      RemoteResult(RemoteResult.SUCESS, Some(r))
+    val r = retrieveWorkingDir match {
+      case true => sshClient.execAndRetrieveWorkingDir(command, currentWorkingDir)
+      case false => sshClient.exec(command)
     }
+    debug("In _exec, command: " + snapshot(command) + ", result-status:" + r.status + ", result-message:" + r.message.getOrElse("None") + ", result-resultWorkingDir:"+r.resultWorkingDir.getOrElse("None"))
+    return r
   }
 
   def exists(file: String, isThisAFile: Boolean, sourceIndex: Int): Boolean = {
@@ -158,21 +157,32 @@ class SshManager(val config: Configuration) extends FileSynchronizer with Log {
       case None => false
     }
   }
-  
-  def scp(fSource: String, fDest: String): Boolean = {
+
+  /*
+   * mode: 
+   *    -1 means copying from local host to remote
+   *    0 means copying from remote to remote
+   *    1 means copying from remote to local
+   */
+  def scp(fSource: String, fDest: String, mode: Int = 0): Boolean = {
     val sshClient = createSSHClient()
     val sshKeyFile = sshClient.keyfile
-    val connectionString = sshClient.login + "@" + 
-    sshClient.hostname + ":" + fSource
-    
+    val connectionString = sshClient.login + "@" + sshClient.hostname + ":"
+    val scpCommand = mode match {
+      case 0 | 1 => 
+        Seq("scp", "-i", sshKeyFile,  connectionString  + fSource, fDest)
+      case -1 => 
+        Seq("scp", "-i", sshKeyFile, fSource, connectionString + fDest)
+    }
+
     //Now make sure the fDest parent directory exists
-    Util.ensureParentDir(fDest)
-    
-    val scpCommand = Seq("scp", "-i", sshKeyFile, connectionString, fDest)
-    info("scp command executing: " + scpCommand)
-    scpCommand.! == 0
+    if (mode == 0 || mode == 1) {
+      Util.ensureParentDir(fDest)
+    }
+    info("scp command executing: " + scpCommand.toString)
+    return scpCommand.! == 0
   }
-  
+
 }
 
 object SshManager extends Log {

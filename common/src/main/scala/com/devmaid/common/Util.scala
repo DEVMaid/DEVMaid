@@ -134,7 +134,7 @@ object Util extends Log {
   }
 
   def isEmpty(d: String): Boolean = {
-    d == null || d == ""
+    d == null || d == "" || d.length() == 0
   }
 
   private def findDirectory(path: String): Option[java.io.File] = {

@@ -3,12 +3,6 @@ package com.devmaid.web.service;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * a factory which creates FsServices
- * 
- * @author bluejoe
- *
- */
 public interface FsServiceFactory
 {
 	/**
@@ -20,6 +14,6 @@ public interface FsServiceFactory
 	 * @param servletContext The servlet context.
 	 * @return The {@link FsService} for the current request.
 	 */
-	FsService getFileService(HttpServletRequest request, ServletContext servletContext);
+	FsService getFileService(HttpServletRequest request, ServletContext servletContext, boolean isRemote);
 
 }

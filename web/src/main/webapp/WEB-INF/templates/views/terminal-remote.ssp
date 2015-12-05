@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSON-RPC Demo for JQuery Terminal Emulator</title>
+    <meta name="author" content="Jakub Jankiewicz - jcubic&#64;onet.pl"/>
+    <meta name="Description" content="Demonstration for JQuery Terminal Emulator using call automaticly JSON-RPC service (in php) with authentication."/>
+    <link rel="sitemap" type="application/xml" title="Sitemap" href=""/>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <script src="/scripts/jquery/jquery-1.7.1.min.js"></script>
+    <script src="/scripts/jquery/jquery.mousewheel-min.js"></script>
+    <script src="/scripts/jquery/jquery.terminal-0.8.8.js"></script>
+    <script src="/scripts/js/init.js"></script>
+    <link href="/stylesheets/terminal/jquery.terminal.css" rel="stylesheet"/>
+    <link href="/stylesheets/terminal/init.css" rel="stylesheet"/>
+  </head>
+<body>
+
+<div id="terminal">
+</div>
+
+<script>
+<%
+import com.devmaid.web.util.UtilWeb
+import com.devmaid.web.JettyLauncher
+val userHome = UtilWeb.getUserHome()
+val currentWorkingDir = JettyLauncher.destinationRoots(0)
+val initWelcomeMessage = UtilWeb.getHostNameRep()
+val initPrompt = UtilWeb.getHostPathNameRep(JettyLauncher.connections(0).login,JettyLauncher.connections(0).hostname,currentWorkingDir)
+%>
+var userHome = "${userHome}";
+var initWelcomeMessage = "${initWelcomeMessage}";
+var initPrompt = "${initPrompt}";
+init("elfinder-servlet/connector-remote",initWelcomeMessage,initPrompt,userHome);
+</script>
+
+<input type="hidden" id="hidCurrentWorkingDir" name="hidCurrentWorkingDir" value="${currentWorkingDir}">
+
+</body>
+

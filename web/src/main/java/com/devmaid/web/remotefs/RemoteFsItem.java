@@ -23,6 +23,8 @@ Copyright (c) 2015 DEVMaid
 package com.devmaid.web.remotefs;
 
 
+import java.util.ArrayList;
+
 import com.devmaid.web.service.FsItem;
 import com.devmaid.web.service.FsVolume;
 
@@ -57,6 +59,17 @@ public class RemoteFsItem implements FsItem
 	public void setVolume(FsVolume volume)
 	{
 		_volume = volume;
+	}
+	
+	@Override
+	public void refresh() {
+		_file.refresh();
+	}
+	
+	@Override
+	public boolean scpFrom(FsItem source) {
+		//For now, assuming source is a local source
+		return _file.scpFrom(source.getFile().getAbsolutePath());
 	}
 	
 	@Override

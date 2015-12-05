@@ -12,8 +12,8 @@
 .elfinder-resize-control { padding-top:3em; }
 .elfinder-resize-control input[type=text] { border:1px solid #aaa; text-align: right; }
 .elfinder-resize-preview {
-	width:400px;
-	height:400px;
+	width:500px;
+	height:500px;
 	padding:10px;
 	background:#fff;
 	border:1px solid #aaa;

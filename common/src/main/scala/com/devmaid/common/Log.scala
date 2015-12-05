@@ -42,6 +42,10 @@ trait Log {
     _p("[DEBUG]", message, null)
   }
   
+  def error(message:String) : Unit = {
+    _p("[ERROR]", message, null)
+  }
+  
   def snapshot(s: String): String = {
     return if(s.length<100) s else ((s take 50) + " ... " + (s takeRight 50))
   }

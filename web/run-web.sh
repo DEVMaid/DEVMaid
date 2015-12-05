@@ -25,13 +25,19 @@
 #   ./run-web.sh --config /etc/DEVMaid/config-web.json
 
 #   ./run-web.sh --debug true
-#   ./run-web.sh --d true
+#   ./run-web.sh -d true
+
+#   ./run-web.sh --nodeploy true
 
 while [[ $# > 1 ]]
 do
 key="$1"
 
 case $key in
+	--nodeploy)
+    NODEPLOY="$2"
+    shift # past argument
+    ;;
     -d|--debug)
     DEBUG="$2"
     shift # past argument
@@ -57,7 +63,13 @@ function deployWebapp {
     mv webapp /etc/DEVMaid/
 }
 
-deployWebapp
+if [ -z "$NODEPLOY" ]
+then
+    echo --deploying the webapp now ...
+    deployWebapp
+else
+    echo --skip deploying the webapp now ...
+fi
 
 PARAMS=""
 if [ -z "$CONFIG" ]
