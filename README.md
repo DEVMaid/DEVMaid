@@ -57,6 +57,7 @@ Let say, you have this <a href="https://github.com/wwken/DEVMaid/blob/master/src
 Now if you open a web browser, you will be able to see the web interface as well (the default location is: http://localhost:8080 ).  This interface helps us look at all the source/destination files from all machines in one single location!
 
 ![Alt text](demo/screen-1.png?raw=true "Web interface for managing the source and destination machines")
+![Alt text](demo/screen-2.png?raw=true "Web interface for issuing any remote commands")
 
 -> or Alternatively, you can download the <a href="https://github.com/wwken/DEVMaid/blob/master/release/latest/" target="_blank">latest executable jar</a> (assuming you save it in the current directory) and run the software with these commands:
 
