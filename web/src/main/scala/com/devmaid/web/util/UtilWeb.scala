@@ -29,6 +29,7 @@ import org.json.JSONObject
 import org.json.JSONException
 import com.devmaid.common.Util;
 import com.devmaid.web.data.TerminalRequest;
+import scala.collection.mutable.ListBuffer
 
 object UtilWeb extends Log {
 
@@ -122,4 +123,15 @@ object UtilWeb extends Log {
     scala.io.Source.fromInputStream(is).mkString
   }
 
+  def printListOfList[A](ll: List[Array[A]]): String = {
+    def pp[AA](l: Array[AA]): String = {
+      (for (i <- 0 to l.size - 1) yield (l(i))).toList.mkString(",")
+    }
+    var s = ""
+    ll.zipWithIndex.foreach {
+      case (value, index) => s += index + " [" + pp(value) + "] \n"
+    }
+    return s
+  }
+  
 }

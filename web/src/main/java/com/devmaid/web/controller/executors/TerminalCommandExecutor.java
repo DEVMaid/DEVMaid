@@ -23,6 +23,8 @@ Copyright (c) 2015 DEVMaid
 
 package com.devmaid.web.controller.executors;
 
+import java.util.List;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,6 +37,7 @@ import com.devmaid.web.service.FsService;
 import com.devmaid.web.data.TerminalRequest;
 import com.devmaid.web.data.TerminalResponse;
 import com.devmaid.web.ssh.SshClient;
+import com.devmaid.web.util.UtilWeb;
 
 public class TerminalCommandExecutor extends AbstractJsonCommandExecutor implements CommandExecutor {
 	@Override
@@ -42,11 +45,19 @@ public class TerminalCommandExecutor extends AbstractJsonCommandExecutor impleme
 		TerminalRequest tRequest = ctx.getTerminalRequest();
 		JSONObject json = new JSONObject();
 		TerminalResponse tResponse = SshClient.exec(tRequest.currentDir(), tRequest.command(), tRequest.connectionIndex());
-		json.put("result", tResponse.getOutput());
-		json.put("resultWorkingDir", tResponse.getResultWorkingDir());
+		UtilWeb.info("In TerminalCommandExecutor execute, tResponse: " + tResponse + ", directoryItems: " + tResponse.getDirectoryItems());
+		if(tResponse.sucess()) {
+			json.put("result", tResponse.getOutput());
+			json.put("resultWorkingDir", tResponse.getResultWorkingDir());
+			json.put("filesDirsName", tResponse.getDirectoryItems());
+		} else {
+			json.put("error", "true");
+			json.put("errorMsg", tResponse.getOutput());
+		}
+		
 		flushJSONResponse(ctx.getResponse(), json, false);
 	}
-
+	
 	@Override
 	protected void execute(FsService fsService, HttpServletRequest request, ServletContext servletContext,
 			JSONObject json) throws Exception {

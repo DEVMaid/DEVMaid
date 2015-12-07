@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 import scala.collection.immutable.List;
 
+import com.devmaid.web.service.FileRepository;
 import com.devmaid.web.service.FsItem;
 import com.devmaid.web.util.UtilWeb;
 import com.devmaid.web.ssh.SshClient;
@@ -80,7 +81,7 @@ public class RemoteFile extends java.io.File {
 		
 		UtilWeb.info("In RemoteFile construct, response: " + response);
 		RemoteFileResponse[] allRemoteFileResponse = parse(this, response);
-		this._allChildrens = constructRemoteFileFromRemoteFileResponse(this, allRemoteFileResponse);
+		this._allChildrens = constructRemoteFileFromRemoteFileResponse(_connectionIndex,this, allRemoteFileResponse);
 	}
 
 	public RemoteFile(RemoteFile o, String relativePath) {
@@ -134,7 +135,7 @@ public class RemoteFile extends java.io.File {
 		String response = sshFind(keyword);
 		UtilWeb.info("In RemoteFile find, response: " + response);
 		RemoteFileResponse[] allRemoteFileResponse = parse(this, response);
-		RemoteFile[] allRemoteFiles= constructRemoteFileFromRemoteFileResponse(this, allRemoteFileResponse);
+		RemoteFile[] allRemoteFiles= constructRemoteFileFromRemoteFileResponse(_connectionIndex,this, allRemoteFileResponse);
 		return allRemoteFiles;
 	}
 
@@ -308,14 +309,14 @@ public class RemoteFile extends java.io.File {
 		return allRemoteFileResponses.toArray(new RemoteFileResponse[allRemoteFileResponses.size()]);
 	}
 	
-	private static RemoteFile[] constructRemoteFileFromRemoteFileResponse(RemoteFile currentFile, RemoteFileResponse[] allRemoteFileResponses) {
+	private static RemoteFile[] constructRemoteFileFromRemoteFileResponse(int connectionIndex, RemoteFile currentFile, RemoteFileResponse[] allRemoteFileResponses) {
 		ArrayList<RemoteFile> allRemoteFiles = new ArrayList<RemoteFile>();
 		for (int i = 0; i < allRemoteFileResponses.length; i++) {;
 			String wholeRelativePath = Util.joinPath(currentFile._p, allRemoteFileResponses[i].path);
 			if (allRemoteFileResponses[i].path.charAt(0) == '/') {	//If it is absolute path already, then just take that absolute path without joining
 				wholeRelativePath = allRemoteFileResponses[i].path;
 			}
-			RemoteFile subFile = new RemoteFile(wholeRelativePath);
+			RemoteFile subFile = FileRepository.getInstance().getRemoteFile(connectionIndex, wholeRelativePath);
 			subFile.setConnectionIndex(currentFile._connectionIndex);
 			subFile.setParentFile(currentFile);
 			//UtilWeb.debug("In RemoteFile construct, wholeRelativePath: " + wholeRelativePath);

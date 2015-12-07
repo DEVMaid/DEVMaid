@@ -16,7 +16,18 @@ function beautifyPrompt(userHomeDir, newCurrentPath) {
   }
 }
 
-function init(rpcDest, userNameAtHost, initPrompt, userHomeDir) {
+var all_my_commands;
+
+function convertToArray(str, delimiter) {
+  var strArray = str.split(delimiter);
+  var resArray = [];
+  for (i = 0; i < strArray.length; i++) { 
+    resArray.push(strArray[i]);
+  }
+  return resArray;
+}
+
+function init(rpcDest, userNameAtHost, initPrompt, userHomeDir, initFilesDirsName) {
   jQuery(document).ready(function($) {
     var id = 1;
     $('body').terminal(function(command, term) {
@@ -24,22 +35,26 @@ function init(rpcDest, userNameAtHost, initPrompt, userHomeDir) {
                        "terminal",
                        [$('#hidCurrentWorkingDir').val(), command],
                        function(data) {
-                           //alert("data: " + data);
                            term.resume();
-                           if (data.error && data.error.message) {
-                               term.error(data.error.message);
+                           //var cbP = beautifyPrompt(userHomeDir, $('#hidCurrentWorkingDir').val());
+                           //term.echo(userNameAtHost+":"+cbP+"$ " + command);
+                           if (data.errorMsg) {
+                               term.error(data.errorMsg);
                            } else {
                                if (typeof data.result == 'boolean') {
                                    term.echo(data.result ? 'success' : 'fail');
                                }
-                               if(data.resultWorkingDir && data.resultWorkingDir.length>0) {
+                               if(data.result && data.result.length > 0) {
+                                   term.echo(data.result);
+                               }
+                              if(data.resultWorkingDir && data.resultWorkingDir.length>0) {
                                   //Update the prompt if there is any
                                   var bP = beautifyPrompt(userHomeDir, data.resultWorkingDir);
                                   term.set_prompt(userNameAtHost+":"+bP+"$ ");
                                   $('#hidCurrentWorkingDir').val(data.resultWorkingDir);
                                }
-                               if(data.result && data.result.length > 0) {
-                                   term.echo(data.result);
+                               if(data.filesDirsName) {
+                                all_my_commands = convertToArray(data.filesDirsName, ",");
                                }
                            }
                        },
@@ -52,6 +67,12 @@ function init(rpcDest, userNameAtHost, initPrompt, userHomeDir) {
         
     }, {
         greetings: "Welcome to DEVMaid Web Terminal at " + userNameAtHost,
+        tabcompletion : true,
+        completion: function(terminal, command, callback) {
+          all_my_commands = convertToArray(initFilesDirsName, ",");
+          //alert("all_my_commands: "+all_my_commands);
+          callback(all_my_commands);
+        }, 
         prompt: initPrompt + "$ ", 
         onBlur: function() {
             // prevent loosing focus

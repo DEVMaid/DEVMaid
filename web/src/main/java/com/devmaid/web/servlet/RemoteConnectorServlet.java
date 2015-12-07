@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.devmaid.common.Util;
 import com.devmaid.common.config.Connection;
 import com.devmaid.web.controller.ConnectorController;
 import com.devmaid.web.controller.executor.CommandExecutorFactory;
@@ -45,6 +46,7 @@ import com.devmaid.web.remotefs.RemoteFile;
 import com.devmaid.web.util.Log;
 import com.devmaid.web.util.UtilWeb;
 import com.devmaid.web.JettyLauncher;
+import com.devmaid.web.service.FileRepository;
 import com.devmaid.web.ssh.SshClient;
 
 import org.slf4j.Logger;
@@ -103,9 +105,9 @@ public class RemoteConnectorServlet extends ConnectorServlet
 			Connection conn = conns.get(connectionIndex);
 			for(int i=0; i<destRoots.size(); i++) {
 				String destRoot = destRoots.get(i);
-				String dirName = UtilWeb.instance().getName(destRoot);
+				//String dirName = UtilWeb.instance().getName(destRoot);
 				String repName = conn.hostname() + ":"+destRoot+"";
-				RemoteFile rootRf = new RemoteFile(destRoot);
+				RemoteFile rootRf = FileRepository.getInstance().getRemoteFile(connectionIndex, destRoot);
 				rootRf.setConnectionIndex(connectionIndex);
 				fsService.addVolume("RemoteSource"+i,
 						ceateRemoteFsVolume(i, repName, rootRf));

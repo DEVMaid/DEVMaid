@@ -77,9 +77,9 @@ object SshClient extends Log {
     val tR = Util.isEmpty(command) match {
       case false => {
         val result = sshManagers(connectionIndex).exec(currentWorkingDir, command)
-        new TerminalResponse(result.isSucess(), result.message, result.resultWorkingDir)
+        new TerminalResponse(result.isSucess(), result.message, result.resultWorkingDir, result.directoryItems)
       }
-      case true => new TerminalResponse(true, Some(""), Some(""))
+      case true => new TerminalResponse(true, Some(""), Some(""), None)
     } 
     return tR
   }
