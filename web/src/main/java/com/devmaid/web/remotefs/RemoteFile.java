@@ -54,19 +54,19 @@ public class RemoteFile extends java.io.File {
 		super(relativePath);
 		this._p = relativePath;
 	}
-	
+
 	String sshCat() {
 		return SshClient.cat(this._p, _connectionIndex, _sourceIndex, true);
 	}
-	
+
 	public String cat() {
 		return sshCat();
 	}
-	
+
 	String sshLs() {
 		return SshClient.ls(this._p, _connectionIndex, _sourceIndex, true);
 	}
-	
+
 	private void construct() {
 		String response = sshLs();
 
@@ -78,10 +78,10 @@ public class RemoteFile extends java.io.File {
 		 * Nov 9 19:55 gis-tools-for-hadoop.wiki/ -rw-rw-r-- 1 ubuntu ubuntu 17
 		 * Nov 20 05:41 README.txt
 		 */
-		
+
 		UtilWeb.info("In RemoteFile construct, response: " + response);
 		RemoteFileResponse[] allRemoteFileResponse = parse(this, response);
-		this._allChildrens = constructRemoteFileFromRemoteFileResponse(_connectionIndex,this, allRemoteFileResponse);
+		this._allChildrens = constructRemoteFileFromRemoteFileResponse(_connectionIndex, this, allRemoteFileResponse);
 	}
 
 	public RemoteFile(RemoteFile o, String relativePath) {
@@ -123,7 +123,7 @@ public class RemoteFile extends java.io.File {
 	String sshFind(String keyword) {
 		return SshClient.find(this._p, keyword, _connectionIndex, _sourceIndex, true);
 	}
-	
+
 	/*
 	 * This function is to issue a find command remotely on the current
 	 * directory and return a list of the RemoteFile which match the query
@@ -135,7 +135,8 @@ public class RemoteFile extends java.io.File {
 		String response = sshFind(keyword);
 		UtilWeb.info("In RemoteFile find, response: " + response);
 		RemoteFileResponse[] allRemoteFileResponse = parse(this, response);
-		RemoteFile[] allRemoteFiles= constructRemoteFileFromRemoteFileResponse(_connectionIndex,this, allRemoteFileResponse);
+		RemoteFile[] allRemoteFiles = constructRemoteFileFromRemoteFileResponse(_connectionIndex, this,
+				allRemoteFileResponse);
 		return allRemoteFiles;
 	}
 
@@ -192,11 +193,11 @@ public class RemoteFile extends java.io.File {
 	public long getFileSize() {
 		return this.length();
 	}
-	
+
 	public void setFileSize(long fileSizeInBytes) {
 		this.fileSize = fileSizeInBytes;
 	}
-	
+
 	@Override
 	public long length() {
 
@@ -296,30 +297,43 @@ public class RemoteFile extends java.io.File {
 					rfResponse.month = responseAry[RemoteFileResponse.INDEX_MODIFIED_MONTH];
 					rfResponse.day = Integer.parseInt(responseAry[RemoteFileResponse.INDEX_MODIFIED_DAY]);
 					rfResponse.timeOrYear = responseAry[RemoteFileResponse.INDEX_MODIFIED_TIMEORYEAR];
-					if(path.charAt(path.length()-1) == '*') {
-						//Remove the * character at the end of the path.
-						// For example, the path might look like /home/ubuntu/workspace/gis-tools-for-hadoop.wiki/TutorialImages/Image2F2H.png*
-						path = path.substring(0, path.length()-1);
+					if (path.charAt(path.length() - 1) == '*') {
+						// Remove the * character at the end of the path.
+						// For example, the path might look like
+						// /home/ubuntu/workspace/gis-tools-for-hadoop.wiki/TutorialImages/Image2F2H.png*
+						path = path.substring(0, path.length() - 1);
 					}
 					rfResponse.path = path;
 					allRemoteFileResponses.add(rfResponse);
 				}
 			}
-		}// end the for loop
+		} // end the for loop
 		return allRemoteFileResponses.toArray(new RemoteFileResponse[allRemoteFileResponses.size()]);
 	}
-	
-	private static RemoteFile[] constructRemoteFileFromRemoteFileResponse(int connectionIndex, RemoteFile currentFile, RemoteFileResponse[] allRemoteFileResponses) {
+
+	private static RemoteFile[] constructRemoteFileFromRemoteFileResponse(int connectionIndex, RemoteFile currentFile,
+			RemoteFileResponse[] allRemoteFileResponses) {
 		ArrayList<RemoteFile> allRemoteFiles = new ArrayList<RemoteFile>();
-		for (int i = 0; i < allRemoteFileResponses.length; i++) {;
+		for (int i = 0; i < allRemoteFileResponses.length; i++) {
+			;
 			String wholeRelativePath = Util.joinPath(currentFile._p, allRemoteFileResponses[i].path);
-			if (allRemoteFileResponses[i].path.charAt(0) == '/') {	//If it is absolute path already, then just take that absolute path without joining
+			if (allRemoteFileResponses[i].path.charAt(0) == '/') { // If it is
+																	// absolute
+																	// path
+																	// already,
+																	// then just
+																	// take that
+																	// absolute
+																	// path
+																	// without
+																	// joining
 				wholeRelativePath = allRemoteFileResponses[i].path;
 			}
 			RemoteFile subFile = FileRepository.getInstance().getRemoteFile(connectionIndex, wholeRelativePath);
 			subFile.setConnectionIndex(currentFile._connectionIndex);
 			subFile.setParentFile(currentFile);
-			//UtilWeb.debug("In RemoteFile construct, wholeRelativePath: " + wholeRelativePath);
+			// UtilWeb.debug("In RemoteFile construct, wholeRelativePath: " +
+			// wholeRelativePath);
 			subFile.setSourceIndex(currentFile._sourceIndex);
 			if (allRemoteFileResponses[i].permissionInfo.charAt(0) == 'd') {
 				subFile.setDirectory(true);
@@ -329,45 +343,47 @@ public class RemoteFile extends java.io.File {
 			subFile.setFileSize(allRemoteFileResponses[i].fileSize);
 			allRemoteFiles.add(subFile);
 
-		}// end the for loop
+		} // end the for loop
 		return allRemoteFiles.toArray(new RemoteFile[allRemoteFiles.size()]);
 	}
 
-	//This method is to write a string of new content to this file through ssh
+	// This method is to write a string of new content to this file through ssh
 	public void write(String newContent) {
 		sshWrite(newContent);
 	}
-	
+
 	String sshWrite(String newContent) {
 		return SshClient.write(this._p, newContent, _connectionIndex, _sourceIndex, true);
 	}
-	
-	
+
 	public String getRandomizedFileName() {
 		return Util.getFileName(this._p) + "_" + UUID.randomUUID();
 	}
 
 	/*
-	 * Executes the scp command on the local machine where the file: tmpFileToWritenTo, will be writen to
+	 * Executes the scp command on the local machine where the file:
+	 * tmpFileToWritenTo, will be writen to
 	 */
 	public boolean scp(String tmpFileToWritenTo) {
 		// TODO Auto-generated method stub
 		return SshClient.scp(this._p, tmpFileToWritenTo, _connectionIndex);
 	}
-	
+
 	/*
 	 * Refresh the data structure
 	 */
 	public void refresh() {
 		construct();
 	}
-	
+
 	/*
-	 * Executes the scp commond on the local machine where sourceLocalPath is the source and this object's path is the dest
+	 * Executes the scp commond on the local machine where sourceLocalPath is
+	 * the source and this object's path is the dest
 	 */
 	public boolean scpFrom(String sourcePath) {
 		String destPathWithSourceFileName = Util.joinPath(this._p, Util.getFileName(sourcePath));
-		UtilWeb.info("In RemoteFile scpFrom, sourcePath: "+sourcePath+", destPathWithSourceFileName: " + destPathWithSourceFileName);
+		UtilWeb.info("In RemoteFile scpFrom, sourcePath: " + sourcePath + ", destPathWithSourceFileName: "
+				+ destPathWithSourceFileName);
 		return SshClient.scpFrom(sourcePath, destPathWithSourceFileName, _connectionIndex);
 	}
 

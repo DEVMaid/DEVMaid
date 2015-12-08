@@ -101,7 +101,7 @@ class RichSshClient(val sshDaemon: SSHDaemon) extends Log {
             case -1 => None
             case _ => {
               val lsContents = rawContents.substring(rawContents.indexOf(lsDelimiter)+lsDelimiter.length()+1, rawContents.lastIndexOf(lsDelimiter)-1)
-              Util.parseLsLrAOutput(lsContents)
+              Util.parseLsLrAOutput(lsContents, true)
             }
           }
           val resultedWorkingDir = lastNewLineIndex match {

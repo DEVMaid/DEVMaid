@@ -69,7 +69,9 @@ function init(rpcDest, userNameAtHost, initPrompt, userHomeDir, initFilesDirsNam
         greetings: "Welcome to DEVMaid Web Terminal at " + userNameAtHost,
         tabcompletion : true,
         completion: function(terminal, command, callback) {
-          all_my_commands = convertToArray(initFilesDirsName, ",");
+          if(!all_my_commands) {
+            all_my_commands = convertToArray(initFilesDirsName, ",");
+          }
           //alert("all_my_commands: "+all_my_commands);
           callback(all_my_commands);
         }, 

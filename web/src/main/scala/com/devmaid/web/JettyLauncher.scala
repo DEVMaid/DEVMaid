@@ -114,9 +114,9 @@ object JettyLauncher extends Log { // this is my entry object as specified in sb
     
     info("connections...:" + connections)
     info("sourceRoots...: " + sourceRoots)
-    info("allFilesUnderSourceRoots...: " + UtilWeb.printListOfList(allFilesUnderSourceRoots))
+    info("allFilesUnderSourceRoots...: " + (allFilesUnderSourceRoots))
     info("destinationRoots...: " + destinationRoots)
-    info("allFilesUnderDestinationRoots...: " + UtilWeb.printListOfList(allFilesUnderDestinationRoots))
+    info("allFilesUnderDestinationRoots...: " + (allFilesUnderDestinationRoots))
     
     run()
   }
