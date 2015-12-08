@@ -19,6 +19,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
+import com.devmaid.common.Util;
+import com.devmaid.web.service.FileRepository;
 import com.devmaid.web.service.FsItem;
 import com.devmaid.web.service.FsItemFilter;
 import com.devmaid.web.service.FsVolume;
@@ -105,7 +107,8 @@ public class LocalFsVolume implements FsVolume
 	@Override
 	public FsItem fromPath(String relativePath)
 	{
-		return fromFile(new File(_rootDir, relativePath));
+		File f = FileRepository.getInstance().getLocalFile(0, Util.joinPath(_rootDir.getAbsolutePath(), relativePath));
+		return fromFile(f);
 	}
 
 	@Override

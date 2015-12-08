@@ -42,6 +42,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import com.devmaid.web.remotefs.RemoteFile;
+import com.devmaid.web.service.FileRepository;
 import com.devmaid.web.service.FsItem;
 import com.devmaid.web.service.FsItemFilter;
 import com.devmaid.web.service.FsVolume;
@@ -123,8 +124,7 @@ public class RemoteFsVolume implements FsVolume {
 		if (childrenFromRoot != null) {
 			return fromFile(childrenFromRoot);
 		} else {
-			RemoteFile rf = new RemoteFile(_rootDir, absolutePath);
-
+			RemoteFile rf = FileRepository.getInstance().getRemoteFile(_rootDir.getConnectionIndex(), Util.joinPath(_rootDir.getAbsolutePath(), absolutePath));
 			// Here i am looking for the parent dir
 			String parentRelativePath = Util.getParentPath(relativePath);
 			String parentAbsolutePath = Util.joinPath(_rootDir.getFileName(), parentRelativePath);

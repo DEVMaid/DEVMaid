@@ -3,6 +3,7 @@ package com.devmaid.common
 import java.nio.file.{ Path, Paths, Files, NoSuchFileException }
 import java.io._
 import scala.collection.JavaConverters._
+import scala.collection.mutable.ListBuffer
 
 object Util extends Log {
 
@@ -46,7 +47,7 @@ object Util extends Log {
       ensureDir(f.getParent)
     }
   }
-  
+
   def ensureDir(p: String) = {
     val f = new File(p)
     f.mkdirs()
@@ -79,8 +80,8 @@ object Util extends Log {
       newP2 = p2 takeRight p2.length - 2
     }
     if (p1.length() == 0 || lastC == "/") {
-      if(p1.length() > 0 && (newP2 take 1) == "/") {
-        return p1 + (newP2 takeRight newP2.length -1)
+      if (p1.length() > 0 && (newP2 take 1) == "/") {
+        return p1 + (newP2 takeRight newP2.length - 1)
       } else {
         return p1 + newP2
       }
@@ -148,6 +149,41 @@ object Util extends Log {
     val alFilteredFiles = allFiles.filter(x => !isAnyYSubDirectoryOfX(x.getAbsolutePath, fileTypesToBeIgnored))
     //debug("In deepListFiles, alFilteredFiles: " + alFilteredFiles)
     return alFilteredFiles.flatMap(file => if (file.isDirectory) file :: deepListFiles(file) else List(file)).toList
+  }
+
+  /*
+   * o can be output like: 
+   * 
+   *  -rw-r--r--   1 kenwu  staff   229B Dec  7 16:05 README.md
+			drwxr-xr-x  15 kenwu  staff   510B Dec  7 18:10 src/
+			drwxr-xr-x   5 kenwu  staff   170B Dec  7 16:42 ../
+			drwxr-xr-x  23 kenwu  staff   782B Dec  7 20:30 ./
+			
+			When onlyFilesDirs is set to true, only README.md and src/ are returned (i.e. ../ and ./ are ignored)
+   */
+  def parseLsLrAOutput(o: String, onlyFilesDirs: Boolean): Option[List[(Boolean, String)]] = {
+    if (Util.isEmpty(o)) {
+      return None
+    } else {
+      val lines = o.split("\n")
+      val results = new ListBuffer[(Boolean, String)]()
+      for (line <- lines) {
+        val responseAry = line.split("\\s+")
+        if (responseAry.length > 2) {
+          val isDirectory = (responseAry(0)(0) == 'd')
+          var fileName = responseAry(8)
+          if(!onlyFilesDirs || (!fileName.equals("./") && !fileName.equals("../"))) {
+            if (fileName.charAt(fileName.length() - 1) == '*') {
+              //Remove the * character at the end of the path.
+              // For example, the path might look like /home/ubuntu/workspace/gis-tools-for-hadoop.wiki/TutorialImages/Image2F2H.png*
+              fileName = fileName.substring(0, fileName.length() - 1);
+            }
+            results += ((isDirectory, fileName))
+          } 
+        }
+      }
+      return Some(results.toList)
+    }
   }
 
 }

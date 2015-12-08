@@ -1,8 +1,8 @@
-# DEVMaid 
+# DEVMaid v2.0.beta
 
 [![Build Status](https://travis-ci.org/DEVMaid/DEVMaid.svg?branch=master)](https://travis-ci.org/DEVMaid/DEVMaid.svg)
 
-### This software is to increase the efficiency and productivity in all software developments by unifying local and remote servers all in once concepts.
+### This software is to increase the efficiency and productivity in all software developments by unifying local and remote servers all in once concepts (such as file synchronizations/managements, terminal access to all machines ...etc) one single browser.
 
 #### Why and What?
 Have you ever feel tired of only changing one line of the source file and deploying it to all remote servers manually – such as copying the source and ssh into the remote host and vi that file and paste it and save it, or switching to the deploy terminals to run the build?  These operations usually involves at least 5-10 keystrokes but in the long run this does not increase the productivity at all but fatigue and frustrations.  With this software, let say whenever you are done with editing the source/config files on your local work machine, you can set it up to:
@@ -99,9 +99,10 @@ The prerequisites are to setup the local ssh server and be able to <a href="http
 
 ###### Related Articles/Misc 
 
-For more details and use case, check it out here at <a href="https://wwken.wordpress.com/2015/10/23/serversynchronizer-the-software-that-synchronizes-all-the-files-from-a-local-server-to-all-remote-servers/" target="_blank">my blog</a>.
-
 For the historical changes logs, it is available in <a href="https://github.com/wwken/DEVMaid/blob/master/CHANGES.md" target="_blank">here</a>.
+
+###### Knowledge page - for any bug/issue documents 
+https://github.com/DEVMaid/DEVMaid/wiki/knowledge
 
 
 

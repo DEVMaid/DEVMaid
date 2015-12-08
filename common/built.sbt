@@ -1,5 +1,5 @@
 name := "DevMaid-common"
-version := "1.2"
+version := "2.0.beta"
 enablePlugins(GitVersioning)
 git.useGitDescribe := true
 

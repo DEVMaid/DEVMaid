@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.devmaid.common.Util;
 import com.devmaid.web.controller.ConnectorController;
 import com.devmaid.web.controller.executor.CommandExecutorFactory;
 import com.devmaid.web.controller.executor.DefaultCommandExecutorFactory;
@@ -19,6 +20,7 @@ import com.devmaid.web.impl.DefaultFsServiceConfig;
 import com.devmaid.web.impl.FsSecurityCheckForAll;
 import com.devmaid.web.impl.StaticFsServiceFactory;
 import com.devmaid.web.localfs.LocalFsVolume;
+import com.devmaid.web.service.FileRepository;
 import com.devmaid.web.util.Log;
 import com.devmaid.web.util.UtilWeb;
 import com.devmaid.web.JettyLauncher;
@@ -100,8 +102,9 @@ public class ConnectorServlet extends HttpServlet
 			String sourceRoot = sourceRoots.get(i);
 			String dirName = UtilWeb.instance().getName(sourceRoot);
 			String repName = dirName + " ("+sourceRoot+")";
+			File f = FileRepository.getInstance().getLocalFile(0, sourceRoot);
 			fsService.addVolume("LocalSource"+i,
-					ceateLocalFsVolume(repName, new File(sourceRoot)));
+					ceateLocalFsVolume(repName, f));
 		}
 		//fsService.addVolume("A",
 		//		ceateLocalFsVolume("My Files", new File("/Users/ken/workspace/analysis/")));

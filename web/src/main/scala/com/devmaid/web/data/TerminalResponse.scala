@@ -29,9 +29,18 @@ package com.devmaid.web.data
 			For example, if this command is executed: cd /tmp/ && echo 'hello' && cd /etc/DEVMaid
 			resultWorkingDir should indiciate -> /etc/DEVMaid
 */
-case class TerminalResponse(sucess: Boolean, output: Option[String], resultWorkingDir: Option[String]) {
+case class TerminalResponse(sucess: Boolean, output: Option[String], resultWorkingDir: Option[String], directoryItems: Option[List[(Boolean, String)]] = None) {
   def getOutput = output.getOrElse(TerminalResponse.EMPTY_RESPONSE_STR)
   def getResultWorkingDir = resultWorkingDir.getOrElse(TerminalResponse.EMPTY_RESPONSE_STR)
+  def getDirectoryItems = directoryItems match {
+    case None => TerminalResponse.EMPTY_RESPONSE_STR
+    case _ => {
+      (for(i <- 0 to directoryItems.get.size-1) yield directoryItems.get(i)._2).toList.mkString(",") 
+    }
+  }
+  override def toString: String = {
+    "->sucess = " + sucess + output.map(s => "; output = " + s).getOrElse("") + resultWorkingDir.map(s => "; resultWorkingDir = " + s).getOrElse("")+ directoryItems.map(s => "; directoryItems = " + s).getOrElse("")
+  }
 }
 
 object TerminalResponse {

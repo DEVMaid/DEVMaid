@@ -22,9 +22,12 @@ Copyright (c) 2015 Ken Wu
 
 package com.devmaid.common.file
 
-case class RemoteResult(status: String, message: Option[String] = None, resultWorkingDir: Option[String] = None){
+import java.io.File
+
+case class RemoteResult(status: String, message: Option[String] = None, resultWorkingDir: Option[String] = None
+    , directoryItems: Option[List[(Boolean, String)]] = None){
   override def toString: String = {
-    "->status = " + status + message.map(s => "; message = " + s).getOrElse("") + resultWorkingDir.map(s => "; resultWorkingDir = " + s).getOrElse("")
+    "->status = " + status + message.map(s => "; message = " + s).getOrElse("") + resultWorkingDir.map(s => "; resultWorkingDir = " + s).getOrElse("") + directoryItems.map(s => "; directoryItems = " + s).getOrElse("")
   }
   
   def isSucess() : Boolean = {

@@ -55,6 +55,8 @@ class SshClientTest extends FunSpec with BaseSpec with Matchers with Log {
     assert(tRSucess.sucess)
     assert(tRSucess.getOutput==msg)
     assert(areTwoPathsTheSame(tRSucess.getResultWorkingDir, parentDir))
+    //System.out.println(tRSucess.getDirectoryItems)
+    assert(areTwoPathsTheSame(tRSucess.getDirectoryItems,"currentDir/"))
     
   }
 

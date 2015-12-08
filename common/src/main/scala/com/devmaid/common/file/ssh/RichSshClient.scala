@@ -33,6 +33,7 @@ import java.io.FileInputStream
 import java.io.IOException
 import org.apache.commons.io.input.NullInputStream;
 import com.devmaid.common.file.RemoteResult
+import com.devmaid.common.Util
 
 class RichSshClient(val sshDaemon: SSHDaemon) extends Log {
 
@@ -78,22 +79,38 @@ class RichSshClient(val sshDaemon: SSHDaemon) extends Log {
   }
 
   def execAndRetrieveWorkingDir(command: String, curWorkingDir: String): RemoteResult = {
-      val finalWholeCommand = ((new StringBuilder("cd ")).append(curWorkingDir).append(" && ").append(command).append(" && pwd")).toString 
+      val lsDelimiter="@##@#@***#@#***@#"  //This is for the ls part content
+      val finalWholeCommand = ((new StringBuilder("cd ")).append(curWorkingDir).append(" && ").append(command).append(" && echo "+lsDelimiter+" && ls -laF && echo "+lsDelimiter+" && pwd")).toString 
       val execResult = execNonPlain(finalWholeCommand)  //Append the getting current directory command at the end
       debug("In execAndRetrieveWorkingDir, finalWholeCommand: "+finalWholeCommand+", execResult:" + execResult + ", execResult._2:" + execResult._2 + ", lastIndexOfNewLine:" + execResult._2.lastIndexOf("\n"))
       val remoteResult = execResult._1 match {
         case 0 => {
           val rawContents = execResult._2.substring(0, execResult._2.length()-1)  //This trim out a new line character at the end
-          debug("In execAndRetrieveWorkingDir, rawContents:" + rawContents)
+          //debug("In execAndRetrieveWorkingDir, rawContents:" + rawContents)
           val lastNewLineIndex = (rawContents take rawContents.length-2).lastIndexOf("\n")
           val contents = lastNewLineIndex match {
             case -1 => ""
-            case _ => rawContents.substring(0, lastNewLineIndex)
+            case _ => {
+              if(rawContents.indexOf(lsDelimiter)>0)
+                rawContents.substring(0, rawContents.indexOf(lsDelimiter)-1)
+              else
+                ""
+            }
           }
-          val resultedWorkingDir = rawContents.substring(rawContents.lastIndexOf("\n")+1);
-         new RemoteResult(RemoteResult.SUCESS, Some(contents), Some(resultedWorkingDir)) 
+          val listOfDirectoryItems = lastNewLineIndex match {
+            case -1 => None
+            case _ => {
+              val lsContents = rawContents.substring(rawContents.indexOf(lsDelimiter)+lsDelimiter.length()+1, rawContents.lastIndexOf(lsDelimiter)-1)
+              Util.parseLsLrAOutput(lsContents, true)
+            }
+          }
+          val resultedWorkingDir = lastNewLineIndex match {
+            case -1 => None
+            case _ => Some(rawContents.substring(rawContents.lastIndexOf(lsDelimiter)+lsDelimiter.length()+1));
+          }
+         new RemoteResult(RemoteResult.SUCESS, Some(contents), resultedWorkingDir, listOfDirectoryItems) 
         }
-        case _ => new RemoteResult(RemoteResult.ERROR, Some(execResult._2), None)
+        case _ => new RemoteResult(RemoteResult.ERROR, Some(execResult._2), None, None)
       }
       return remoteResult
   }

@@ -31,11 +31,19 @@ val currentWorkingDir = JettyLauncher.sourceRoots(0)
 val initWelcomeMessage = UtilWeb.getHostNameRep()
 val initPrompt = UtilWeb.getHostPathNameRep("","",currentWorkingDir)
 val beautifiedPrompt = UtilWeb.beautifyPath(initPrompt)
+
+val connectionIndex = 0		
+val sourceIndex = 0		
+
+val initFiles = JettyLauncher.allFilesUnderSourceRoots(sourceIndex)
+val initFilesDirsName = (for(i <- 0 to initFiles.size-1) yield initFiles(i).getName).toList.mkString(",")
 %>
 var userHome = "${userHome}";
 var initWelcomeMessage = "${initWelcomeMessage}";
 var initPrompt = "${beautifiedPrompt}";
-init("elfinder-servlet/connector", initWelcomeMessage, initPrompt, userHome);
+var initFilesDirsName = "${initFilesDirsName}";
+//alert("initFilesName: "+initFilesName);
+init("elfinder-servlet/connector", initWelcomeMessage, initPrompt, userHome, initFilesDirsName);
 </script>
 
 <input type="hidden" id="hidCurrentWorkingDir" name="hidCurrentWorkingDir" value="${currentWorkingDir}">

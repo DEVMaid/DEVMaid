@@ -31,8 +31,13 @@ import spray.json.JsonParser
 import scopt.OptionParser
 import spray.json.DefaultJsonProtocol
 
+import java.io.File
+
 import com.devmaid.web.ssh.SshClient
 import com.devmaid.web.util.Log
+import com.devmaid.web.util.UtilWeb
+import com.devmaid.web.remotefs.RemoteFile
+import com.devmaid.web.service.FileRepository
 import com.devmaid.common.config.Connection
 import com.devmaid.common.config.Configuration
 //import com.devmaid.common.config.MyJsonProtocol
@@ -46,7 +51,9 @@ object JettyLauncher extends Log { // this is my entry object as specified in sb
   
   var connections = List[Connection]()
   var sourceRoots = List("")
+  var allFilesUnderSourceRoots = List(Array(new File("")))
   var destinationRoots = List("")
+  var allFilesUnderDestinationRoots = List(Array(new RemoteFile("")))
   var configFiles = None : Option[List[Configuration]]
   
   def sourceRootsAsJava = sourceRoots.asJava
@@ -75,6 +82,7 @@ object JettyLauncher extends Log { // this is my entry object as specified in sb
   //  scala.io.Source.fromFile(configFileName).getLines().mkString
   //}
   
+  
   def main(args: Array[String]) {
 
     /* Here the logic to parse the configuration file and load it in */
@@ -97,12 +105,18 @@ object JettyLauncher extends Log { // this is my entry object as specified in sb
     SshClient.setConfigFiles(configFiles)
     
     connections = (for(i <- 0 to configFiles.get.size-1) yield configFiles.get(i).connection).toList 
+    
     sourceRoots = configFiles.get(0).sourceRoots
+    allFilesUnderSourceRoots = (for(i <- 0 to sourceRoots.size-1) yield FileRepository.getInstance().getLocalFile(0, sourceRoots(i)).listFiles()).toList;
+    
     destinationRoots = configFiles.get(0).destinationRoots
+    allFilesUnderDestinationRoots = (for(i <- 0 to destinationRoots.size-1) yield FileRepository.getInstance().getRemoteFile(0, destinationRoots(i)).listFiles()).toList;
     
     info("connections...:" + connections)
     info("sourceRoots...: " + sourceRoots)
+    info("allFilesUnderSourceRoots...: " + (allFilesUnderSourceRoots))
     info("destinationRoots...: " + destinationRoots)
+    info("allFilesUnderDestinationRoots...: " + (allFilesUnderDestinationRoots))
     
     run()
   }
