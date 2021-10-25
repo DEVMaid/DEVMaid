@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-10-25T09:39:15.315Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36" etag="vY0xjeV4GQyGGA3-uydq" version="15.5.9" type="github">
+<mxfile host="app.diagrams.net" modified="2021-10-25T09:39:48.509Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36" etag="NJ1DUr6iSyL9JQ52Pd62" version="15.5.9" type="github">
   <diagram id="j2VXAc0lYuu_ALkuWCCA" name="Page-1">
     <mxGraphModel dx="782" dy="1571" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
       <root>
@@ -55,7 +55,7 @@
         <mxCell id="9uwuGhde_1a1OeyD1OMx-80" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;shadow=0;labelBorderColor=none;" edge="1" parent="1" source="9uwuGhde_1a1OeyD1OMx-17" target="9uwuGhde_1a1OeyD1OMx-79">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="9uwuGhde_1a1OeyD1OMx-17" value="CloudWatch - Watch Everything" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.cloudwatch;fillColor=#759C3E;gradientColor=none;" vertex="1" parent="1">
+        <mxCell id="9uwuGhde_1a1OeyD1OMx-17" value="CloudWatch" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.cloudwatch;fillColor=#759C3E;gradientColor=none;" vertex="1" parent="1">
           <mxGeometry x="645.41" y="128.5" width="38.15" height="43" as="geometry" />
         </mxCell>
         <mxCell id="9uwuGhde_1a1OeyD1OMx-19" value="AZ-2" style="fillColor=none;strokeColor=#147EBA;dashed=1;verticalAlign=top;fontStyle=0;fontColor=#147EBA;" vertex="1" parent="1">
